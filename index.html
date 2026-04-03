@@ -1687,6 +1687,43 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 1000);
         };
+
+        window.loadProductsFromApi = async function() {
+            try {
+                const token = localStorage.getItem('ujenzi_token');
+                const headers = token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+                const resp = await fetch('/api/products', { headers });
+                if (!resp.ok) throw new Error('Failed to load products from backend');
+                const products = await resp.json();
+
+                window.productDatabase = {};
+                window.allProductsMap = {};
+
+                products.forEach(p => {
+                    const category = p.category || 'General';
+                    const formatted = {
+                        ...p,
+                        id: p.id,
+                        name: p.name,
+                        price: Number(p.price || 0),
+                        desc: p.description || p.desc || '',
+                        img: p.imageUrl || p.img || 'https://via.placeholder.com/220',
+                        stock: Number(p.stock || 0),
+                        category,
+                        variations: p.variations || []
+                    };
+                    window.allProductsMap[formatted.id] = formatted;
+                    window.productDatabase[category] = window.productDatabase[category] || [];
+                    window.productDatabase[category].push(formatted);
+                });
+
+                if (typeof window.renderHomeBase === 'function') window.renderHomeBase();
+                return true;
+            } catch (err) {
+                console.warn('loadProductsFromApi failed:', err);
+                return false;
+            }
+        };
     </script>
     
     <script type="module">

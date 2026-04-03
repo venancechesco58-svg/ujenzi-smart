@@ -561,9 +561,10 @@
         }
 
         function continueWithGoogle() {
-            console.log('Continuing with Google for:', detectedEmail);
-            alert('Google authentication initiated for ' + detectedEmail);
-            // Implement Google Sign-In logic
+            const email = detectedEmail || '';
+            console.log('Google button pressed for:', email);
+            alert('Google login is not configured in this local demo.\n\nPlease use email/password login or signup by entering your email and password.\n\nAdmin: admin@ujenzi.co / admin123');
+            // Optionally, you can set up Google OAuth in backend and improve this path later.
         }
     </script>
 
