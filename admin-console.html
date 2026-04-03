@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UjenziSmart Admin Console</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="max-w-5xl mx-auto p-4">
+    <header class="flex justify-between items-center mb-4">
+      <div>
+        <h1 class="text-2xl font-black">Admin Console</h1>
+        <p class="text-sm text-slate-600">Manage products as admin</p>
+      </div>
+      <button id="admin-logout" class="px-3 py-2 bg-red-500 text-white rounded">Logout</button>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <h2 class="font-black mb-2">Add New Product</h2>
+        <input id="prod-name" placeholder="Name" class="w-full border p-2 mb-2 rounded" />
+        <input id="prod-desc" placeholder="Description" class="w-full border p-2 mb-2 rounded" />
+        <div class="grid grid-cols-2 gap-2">
+          <input id="prod-price" type="number" placeholder="Price" class="border p-2 rounded" />
+          <input id="prod-stock" type="number" placeholder="Stock" class="border p-2 rounded" />
+        </div>
+        <input id="prod-image" placeholder="Image URL" class="w-full border p-2 mt-2 rounded" />
+        <button id="add-product" class="mt-3 w-full bg-emerald-600 text-white p-2 rounded">Create Product</button>
+        <p id="prod-msg" class="mt-2 text-sm"></p>
+      </div>
+
+      <div class="bg-white p-4 rounded shadow-sm">
+        <h2 class="font-black mb-2">Total Products</h2>
+        <p id="product-count" class="text-4xl font-black"></p>
+        <button id="refresh-products" class="mt-2 px-3 py-2 bg-blue-500 text-white rounded">Refresh</button>
+      </div>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow-sm">
+      <h2 class="font-black mb-4">Product List</h2>
+      <div id="products-list" class="space-y-2"></div>
+    </section>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('ujenzi_token');
+    const user = JSON.parse(localStorage.getItem('ujenzi_user') || 'null');
+    if (!token || !user || user.role !== 'admin') {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('admin-logout').onclick = () => {
+      localStorage.removeItem('ujenzi_token');
+      localStorage.removeItem('ujenzi_user');
+      window.location.href = 'login.html';
+    };
+
+    async function loadProducts() {
+      const res = await fetch('/api/products', { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) return;
+      const products = await res.json();
+      document.getElementById('product-count').textContent = products.length;
+      document.getElementById('products-list').innerHTML = products.map(p => `
+        <div class="p-2 border rounded flex justify-between items-center">
+          <div>
+            <p class="font-black">${p.name}</p>
+            <p class="text-xs text-slate-500">TZS ${Number(p.price).toLocaleString()} | Stock: ${p.stock}</p>
+          </div>
+          <img src="${p.imageUrl || 'https://via.placeholder.com/60'}" class="w-14 h-14 rounded object-cover" />
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('refresh-products').onclick = loadProducts;
+
+    document.getElementById('add-product').onclick = async () => {
+      const name = document.getElementById('prod-name').value.trim();
+      const description = document.getElementById('prod-desc').value.trim();
+      const price = parseFloat(document.getElementById('prod-price').value);
+      const stock = parseInt(document.getElementById('prod-stock').value, 10);
+      const imageUrl = document.getElementById('prod-image').value.trim() || 'https://via.placeholder.com/180';
+      const msg = document.getElementById('prod-msg');
+
+      if (!name || isNaN(price) || isNaN(stock)) {
+        msg.textContent = 'Name, price, and stock are required.';
+        msg.className = 'text-red-500';
+        return;
+      }
+
+      const resp = await fetch('/api/products', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ name, description, price, stock, imageUrl })
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        msg.textContent = data.error || 'Failed to add product';
+        msg.className = 'text-red-500';
+        return;
+      }
+
+      msg.textContent = 'Product added.';
+      msg.className = 'text-green-600';
+      document.getElementById('prod-name').value = '';
+      document.getElementById('prod-desc').value = '';
+      document.getElementById('prod-price').value = '';
+      document.getElementById('prod-stock').value = '';
+      document.getElementById('prod-image').value = '';
+      loadProducts();
+    };
+
+    loadProducts();
+  </script>
+</body>
+</html>

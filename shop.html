@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UjenziSmart - Store</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen">
+  <header class="bg-white shadow-sm fixed w-full z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-black">UjenziSmart Market</h1>
+        <p class="text-xs text-slate-500">Buy construction materials</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="user-badge" class="text-xs text-slate-700"/>
+        <button id="logout-btn" class="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-24 max-w-6xl mx-auto px-4">
+    <div class="mb-6 flex flex-col md:flex-row justify-between gap-4">
+      <div>
+        <p id="cart-summary" class="text-sm font-bold"></p>
+      </div>
+      <div class="flex gap-2">
+        <button id="refresh-products" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Refresh</button>
+        <button id="show-cart" class="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600">Cart (<span id="cart-count">0</span>)</button>
+      </div>
+    </div>
+
+    <section id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></section>
+
+    <div id="cart-panel" class="fixed inset-0 bg-black/50 hidden items-end justify-center">
+      <div class="bg-white w-full max-w-2xl p-4 rounded-t-3xl shadow-xl overflow-auto max-h-[80vh]">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-xl font-black">Your Cart</h2>
+          <button id="close-cart" class="px-3 py-1 text-slate-600 hover:text-slate-900">Close</button>
+        </div>
+        <div id="cart-items" class="space-y-2"></div>
+        <div class="mt-4 border-t pt-4">
+          <p class="font-bold">Total: TZS <span id="cart-total">0</span></p>
+          <div class="mt-2">
+            <input id="delivery-address" class="w-full border p-2 rounded" placeholder="Delivery address" />
+            <input id="phone-number" class="w-full border p-2 rounded mt-2" placeholder="Phone number" />
+          </div>
+          <button id="checkout-btn" class="w-full mt-3 px-4 py-3 text-white bg-green-600 rounded hover:bg-green-700">Place Order</button>
+          <p id="checkout-msg" class="text-sm mt-2"></p>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="text-xl font-black mb-2">Order History</h2>
+      <div id="order-history" class="space-y-2">Loading your orders...</div>
+    </section>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('ujenzi_token');
+    const currentUser = JSON.parse(localStorage.getItem('ujenzi_user') || 'null');
+
+    if (!token || !currentUser) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('user-badge').textContent = `${currentUser.name || currentUser.email}`;
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('ujenzi_token');
+      localStorage.removeItem('ujenzi_user');
+      window.location.href = 'login.html';
+    });
+
+    let products = [];
+    let cart = JSON.parse(localStorage.getItem('ujenzi_cart') || '[]');
+
+    const hCartCount = document.getElementById('cart-count');
+    const hCartSummary = document.getElementById('cart-summary');
+    const hCartItems = document.getElementById('cart-items');
+    const hTotal = document.getElementById('cart-total');
+    const hShowCart = document.getElementById('show-cart');
+    const hCartPanel = document.getElementById('cart-panel');
+
+    function renderCart() {
+      hCartCount.textContent = cart.reduce((s,i)=>s+i.quantity,0);
+      hCartSummary.textContent = `Cart items: ${hCartCount.textContent}`;
+      localStorage.setItem('ujenzi_cart', JSON.stringify(cart));
+
+      if (cart.length === 0) {
+        hCartItems.innerHTML = '<p class="text-slate-500">No items in cart.</p>';
+        hTotal.textContent = '0';
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      hTotal.textContent = total.toLocaleString();
+
+      hCartItems.innerHTML = cart.map((item, idx) => `
+        <div class="p-2 border rounded flex items-center justify-between">
+          <div>
+            <p class="font-bold">${item.name}</p>
+            <p class="text-xs text-slate-500">TZS ${item.price.toLocaleString()} × ${item.quantity}</p>
+          </div>
+          <div class="flex gap-1">
+            <button data-idx="${idx}" class="decr-btn px-2 py-1 bg-slate-200 rounded">-</button>
+            <button data-idx="${idx}" class="incr-btn px-2 py-1 bg-slate-200 rounded">+</button>
+            <button data-idx="${idx}" class="remove-btn px-2 py-1 bg-red-200 text-red-700 rounded">x</button>
+          </div>
+        </div>
+      `).join('');
+
+      for (const btn of document.querySelectorAll('.incr-btn')) {
+        btn.onclick = () => { const idx=+btn.dataset.idx; cart[idx].quantity++; renderCart(); };
+      }
+      for (const btn of document.querySelectorAll('.decr-btn')) {
+        btn.onclick = () => { const idx=+btn.dataset.idx; cart[idx].quantity = Math.max(1, cart[idx].quantity-1); renderCart(); };
+      }
+      for (const btn of document.querySelectorAll('.remove-btn')) {
+        btn.onclick = () => { const idx=+btn.dataset.idx; cart.splice(idx,1); renderCart(); };
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('/api/products', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) throw new Error('Unable to fetch products');
+        products = await res.json();
+        document.getElementById('products-grid').innerHTML = products.map(p => `
+          <article class="bg-white p-4 rounded shadow-sm border">
+            <div class="h-28 mb-3 bg-center bg-cover" style="background-image:url('${p.imageUrl||'https://via.placeholder.com/220'}')"></div>
+            <h3 class="font-black text-lg">${p.name}</h3>
+            <p class="text-slate-500 text-sm mt-1">${p.description || 'No description'}</p>
+            <p class="font-bold mt-2">TZS ${Number(p.price).toLocaleString()}</p>
+            <p class="text-xs mt-1">Stock: ${p.stock}</p>
+            <button class="mt-3 w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700" data-id="${p.id}">Add to Cart</button>
+          </article>
+        `).join('');
+
+        document.querySelectorAll('#products-grid button[data-id]').forEach(btn => {
+          btn.onclick = () => {
+            const product = products.find(v => v.id === btn.dataset.id);
+            if (!product || product.stock <= 0) return alert('Out of stock');
+            const existing = cart.find(item => item.id === product.id);
+            if (existing) existing.quantity++;
+            else cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
+            renderCart();
+          };
+        });
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('products-grid').innerHTML = '<p class="col-span-3 text-red-500">Failed to load products.</p>';
+      }
+    }
+
+    hShowCart.addEventListener('click', () => { hCartPanel.classList.remove('hidden'); hCartPanel.classList.add('flex'); });
+    document.getElementById('close-cart').addEventListener('click', () => { hCartPanel.classList.add('hidden'); hCartPanel.classList.remove('flex'); });
+    document.getElementById('refresh-products').addEventListener('click', loadProducts);
+
+    document.getElementById('checkout-btn').addEventListener('click', async () => {
+      const address = document.getElementById('delivery-address').value.trim();
+      const phone = document.getElementById('phone-number').value.trim();
+      const msg = document.getElementById('checkout-msg');
+      msg.textContent = '';
+
+      if (!address || !phone) {
+        msg.textContent = 'Delivery address and phone are required.';
+        msg.className = 'text-red-500';
+        return;
+      }
+      if (cart.length === 0) {
+        msg.textContent = 'Cart is empty.';
+        msg.className = 'text-red-500';
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const payload = { items: cart, deliveryAddress: address, paymentMethod: 'Cash', total };
+
+      try {
+        const resp = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'Order failed');
+
+        cart = [];
+        renderCart();
+        msg.textContent = `Order placed: ${data.id}`;
+        msg.className = 'text-green-600';
+        loadOrderHistory();
+      } catch (error) {
+        msg.textContent = `Error: ${error.message}`;
+        msg.className = 'text-red-500';
+      }
+    });
+
+    async function loadOrderHistory() {
+      try {
+        const resp = await fetch('/api/orders', { headers: { Authorization: `Bearer ${token}` } });
+        const orders = await resp.json();
+
+        const container = document.getElementById('order-history');
+        if (!Array.isArray(orders) || orders.length === 0) {
+          container.innerHTML = '<p class="text-slate-500">No orders yet.</p>';
+          return;
+        }
+
+        container.innerHTML = orders.map(o => `
+          <article class="bg-white p-3 rounded border">
+            <div class="flex justify-between items-start gap-4">
+              <p class="text-sm font-bold">Order ${o.id}</p>
+              <span class="text-xs text-slate-500">${new Date(o.createdAt || o.createdAt).toLocaleString()}</span>
+            </div>
+            <p class="text-xs mt-1">${o.items.length} items</p>
+            <p class="text-sm font-black mt-1">Total: TZS ${Number(o.total).toLocaleString()}</p>
+            <p class="text-xs text-slate-600">Status: ${o.status || 'PENDING'}</p>
+          </article>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    renderCart();
+    loadProducts();
+    loadOrderHistory();
+  </script>
+</body>
+</html>

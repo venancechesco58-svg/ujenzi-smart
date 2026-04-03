@@ -338,13 +338,12 @@
         let emailExists = false;
         let isAdminUser = false;
 
-        function detectEmail() {
+        async function detectEmail() {
             const emailInput = document.getElementById('email-input');
             const email = emailInput.value.trim();
             const emailError = document.getElementById('email-error');
             const emailHint = document.getElementById('email-hint');
 
-            // Validate email format
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 emailError.classList.remove('hidden');
@@ -357,18 +356,27 @@
             emailHint.classList.remove('hidden');
             emailInput.classList.remove('border-red-500', 'dark:border-red-500');
 
-            // Simulate API call to check email
             detectedEmail = email;
             showLoadingState();
-            
-            // Simulate network delay
-            setTimeout(() => {
-                // Demo: Check if email contains 'admin' or specific patterns
-                isAdminUser = email.includes('admin') || email.includes('master');
-                emailExists = email.length > 5; // Demo logic
-                
+
+            try {
+                const response = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+                if (!response.ok) throw new Error('Failed to check email');
+                const data = await response.json();
+
+                emailExists = Boolean(data.exists);
+                isAdminUser = Boolean(data.isAdmin);
+
                 showAuthMethods();
-            }, 1000);
+            } catch (error) {
+                emailHint.textContent = 'Unable to validate email. Please try again.';
+                emailHint.classList.remove('hidden');
+                console.error('Email check error:', error);
+                const btn = document.getElementById('continue-email-btn');
+                if (btn) { btn.disabled = false; btn.classList.remove('opacity-75', 'cursor-not-allowed'); }
+                document.getElementById('btn-text').textContent = 'Continue';
+                document.getElementById('btn-icon').classList.remove('animate-spin');
+            }
         }
 
         function showLoadingState() {
@@ -460,51 +468,96 @@
         }
 
         // Authentication handlers
-        function continueWithPassword() {
+        async function continueWithPassword() {
             const password = document.getElementById('password-input').value;
+            const passwordError = document.getElementById('password-error');
             if (!password) {
-                document.getElementById('password-error').textContent = 'Password is required';
-                document.getElementById('password-error').classList.remove('hidden');
+                passwordError.textContent = 'Password is required';
+                passwordError.classList.remove('hidden');
                 return;
             }
-            console.log('Sign in with:', detectedEmail, password);
-            alert('User signed in successfully!\nEmail: ' + detectedEmail);
-            // Redirect to dashboard
-            // window.location.href = '/dashboard';
+
+            const signinButton = document.querySelector('#scenario-existing-user button');
+            if (signinButton) { signinButton.disabled = true; signinButton.innerText = 'Signing in...'; }
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: detectedEmail, password })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Login failed');
+
+                localStorage.setItem('ujenzi_token', data.token);
+                localStorage.setItem('ujenzi_user', JSON.stringify(data.user));
+                alert('Signed in successfully as ' + data.user.name);
+                window.location.href = 'shop.html';
+            } catch (error) {
+                passwordError.textContent = error.message;
+                passwordError.classList.remove('hidden');
+            } finally {
+                if (signinButton) { signinButton.disabled = false; signinButton.innerText = 'Sign In'; }
+            }
         }
 
-        function verifyAdminPassword() {
-            const password = document.getElementById('admin-password-input').value;
-            if (!password) {
-                document.getElementById('admin-password-error').textContent = 'Admin password is required';
-                document.getElementById('admin-password-error').classList.remove('hidden');
+        async function verifyAdminPassword() {
+            const adminPassword = document.getElementById('admin-password-input').value;
+            const adminError = document.getElementById('admin-password-error');
+            if (!adminPassword) {
+                adminError.textContent = 'Admin password is required';
+                adminError.classList.remove('hidden');
                 return;
             }
-            console.log('Admin sign in with:', detectedEmail, password);
-            alert('Admin verified successfully!\nEmail: ' + detectedEmail);
-            // Redirect to admin dashboard
-            // window.location.href = '/admin';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: detectedEmail, password: adminPassword })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Login failed');
+
+                if (data.user.role !== 'admin') throw new Error('Admin access required');
+
+                localStorage.setItem('ujenzi_token', data.token);
+                localStorage.setItem('ujenzi_user', JSON.stringify(data.user));
+                alert('Admin verified, redirecting to admin portal');
+                window.location.href = 'admin-console.html';
+            } catch (error) {
+                adminError.textContent = error.message;
+                adminError.classList.remove('hidden');
+            }
         }
 
-        function createAccount() {
-            const name = document.getElementById('signup-name').value;
+        async function createAccount() {
+            const name = document.getElementById('signup-name').value.trim();
             const password = document.getElementById('signup-password').value;
-            const phone = document.getElementById('signup-phone').value;
+            const phone = document.getElementById('signup-phone').value.trim();
 
             if (!name || !password || !phone) {
                 alert('Please fill all fields');
                 return;
             }
 
-            console.log('Create account:', {
-                email: detectedEmail,
-                name: name,
-                password: password,
-                phone: phone
-            });
-            alert('Account created successfully!\nEmail: ' + detectedEmail);
-            // Redirect to dashboard
-            // window.location.href = '/dashboard';
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email: detectedEmail, password, phone })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Registration failed');
+
+                localStorage.setItem('ujenzi_token', data.token);
+                localStorage.setItem('ujenzi_user', JSON.stringify(data.user));
+                alert('Account created. Welcome, ' + data.user.name);
+                window.location.href = 'shop.html';
+            } catch (error) {
+                alert('Register failed: ' + error.message);
+            }
         }
 
         function continueWithGoogle() {
