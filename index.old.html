@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UjenziSmart - Premium Builder</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta property="og:title" content="UjenziSmart - Premium Builder">
+    <meta property="og:description" content="Instant delivery of high-quality building materials. Chat with our construction experts.">
+    <meta property="og:image" content="https://jemmziray-tech.github.io/UjenziSmart/logo.png">
+    <meta property="og:url" content="https://jemmziray-tech.github.io/UjenziSmart/">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        function applyTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme();
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; overscroll-behavior-y: none; }
+        
+        .view-content { width: 100%; will-change: transform, opacity; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRightNative { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInLeftNative { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes tabFadeScale { from { opacity: 0; transform: scale(0.97) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .stagger-item { animation: staggerIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @keyframes staggerIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .click-press { transition: transform 0.1s ease; }
+        .click-press:active { transform: scale(0.96); }
+
+        .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        .bg-deep-tech { background: radial-gradient(circle at top right, #112347 0%, #030814 100%); }
+        .pattern-overlay { background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/svg%3E"); }
+
+        @keyframes floatObj1 { 0%, 100% { transform: translateY(0px) rotate(-5deg); } 50% { transform: translateY(-15px) rotate(5deg); } }
+        @keyframes floatObj2 { 0%, 100% { transform: translateY(0px) translateX(0px) rotate(10deg); } 50% { transform: translateY(12px) translateX(-8px) rotate(-5deg); } }
+        @keyframes floatObj3 { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.05) rotate(-5deg) translateY(-10px); } }
+        .anim-prod { position: absolute; color: rgba(255, 255, 255, 0.06); pointer-events: none; z-index: 1; }
+
+        .gradient-pulse { background: linear-gradient(-45deg, #059669, #10b981, #34d399, #059669); background-size: 400% 400%; animation: gradientMove 10s ease infinite; }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .bar-grow { animation: growUp 1s ease-out forwards; transform-origin: bottom; }
+        @keyframes growUp { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+        .bottom-sheet { transition: transform 0.3s cubic-bezier(0.32, 1.25, 0.32, 1); transform: translateY(100%); }
+        .bottom-sheet.open { transform: translateY(0); }
+        
+        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+        .toggle-checkbox { right: 4px; z-index: 1; border-color: #e5e7eb; transition: all 0.3s; }
+        .toggle-label { width: 3rem; height: 1.5rem; background-color: #e5e7eb; border-radius: 9999px; transition: all 0.3s; }
+    </style>
+</head>
+<body class="bg-[#f4f6f9] dark:bg-gray-900 text-gray-800 dark:text-gray-100 pb-24 transition-colors duration-300 relative min-h-screen">
+
+    <div id="global-alert-bar" class="w-full bg-[#ea580c] text-white text-[10px] sm:text-xs font-bold text-center py-2.5 px-4 shadow-md z-[201] relative flex justify-center items-center gap-2 transition-all">
+        <span class="flex-grow" id="live-news-text">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 inline-block mr-1 -mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <strong>LIVE UPDATE:</strong> High-quality building materials are now available.
+        </span>
+        <button onclick="document.getElementById('global-alert-bar').style.display='none'" class="shrink-0 text-white hover:text-gray-200 text-xl leading-none px-2">&times;</button>
+    </div>
+
+    <div id="auth-screen" class="fixed inset-0 z-[200] bg-[#f4f6f9] dark:bg-gray-900 flex flex-col justify-center px-6 transition-opacity duration-300">
+        <div class="max-w-md mx-auto w-full bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-2xl border dark:border-gray-700 text-center animate-stagger-in">
+            <img src="logo.png" alt="UjenziSmart Logo" class="w-24 h-24 mx-auto mb-4 rounded-3xl object-cover shadow-lg border border-gray-100 dark:border-gray-700">
+            <h1 class="text-3xl font-black text-green-600 dark:text-green-500 mb-2 tracking-tighter">UjenziSmart</h1>
+            <p class="text-gray-500 mb-8 text-sm font-medium">Your premium building partner.</p>
+            
+            <!-- Google Sign In -->
+            <button type="button" id="google-signin-btn" class="w-full py-4 bg-white dark:bg-gray-700 text-gray-700 dark:text-white border dark:border-gray-600 rounded-2xl font-bold flex items-center justify-center gap-3 click-press shadow-sm hover:shadow-md transition-all mb-4">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Continue with Google
+            </button>
+            
+            <!-- Email Sign In -->
+            <button type="button" id="email-link-btn" class="w-full py-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white border dark:border-gray-600 rounded-2xl font-bold flex items-center justify-center gap-3 click-press shadow-sm hover:shadow-md transition-all mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                Continue with Email
+            </button>
+            
+            <!-- Divider -->
+            <div class="flex items-center my-6">
+                <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+                <span class="px-3 text-sm font-bold text-gray-500 dark:text-gray-400">or</span>
+                <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+            </div>
+            
+            <!-- Login/Signup Toggle -->
+            <div class="flex mb-6 bg-gray-100 dark:bg-gray-700 rounded-2xl p-1">
+                <button id="login-tab" class="flex-1 py-2 px-4 rounded-xl font-bold text-sm transition-all bg-white dark:bg-gray-600 text-gray-800 dark:text-white shadow-sm">Login</button>
+                <button id="signup-tab" class="flex-1 py-2 px-4 rounded-xl font-bold text-sm transition-all text-gray-500 dark:text-gray-400">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="login-form" class="space-y-4">
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none font-medium text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none font-medium text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+                <button type="button" id="email-signin-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold click-press shadow-lg transition-all flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Sign In
+                </button>
+                <div class="text-center">
+                    <a href="#" class="text-sm text-green-600 dark:text-green-400 font-bold hover:underline">Forgot Password?</a>
+                </div>
+            </div>
+            
+            <!-- Signup Form -->
+            <div id="signup-form" class="space-y-4 hidden">
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your full name" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none font-medium text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none font-medium text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
+                    <input type="tel" id="signup-phone" placeholder="Enter your phone number" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none font-medium text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none font-medium text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                </div>
+                <button type="button" id="email-signup-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-bold click-press shadow-lg transition-all">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="bg-deep-tech pt-12 pb-14 px-6 shadow-xl relative w-full z-30 text-white rounded-b-[2.5rem] overflow-hidden border-b border-white/5">
+        <div class="absolute inset-0 pattern-overlay pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+        
+        <svg class="anim-prod w-24 h-24 top-6 right-4" style="animation: floatObj1 8s ease-in-out infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3 4.5h18M3 9.5h18M3 14.5h18M3 19.5h18M8 4.5v5M16 4.5v5M5 9.5v5M13 9.5v5M21 9.5v5M9 14.5v5M17 14.5v5"/></svg>
+        <svg class="anim-prod w-20 h-20 bottom-12 left-6" style="animation: floatObj2 10s ease-in-out infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M4 20h16L4 4v16zM8 20v-4M12 20v-4M16 20v-4M4 16h4M4 12h4M4 8h4"/></svg>
+        <svg class="anim-prod w-28 h-28 top-20 right-32" style="animation: floatObj3 12s ease-in-out infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2V10z M9 21V12h6v9"/></svg>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex items-center justify-between mb-8 h-16">
+                <div class="flex items-center gap-4">
+                    <button id="header-back-btn" onclick="goBack()" class="hidden w-11 h-11 bg-white/10 rounded-full border border-white/20 flex items-center justify-center click-press glass hover:bg-white/20 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                    </button>
+                    
+                    <div class="relative shrink-0 transition-transform hover:scale-105">
+                        <img src="logo.png" alt="UjenziSmart Logo" class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl object-cover border-2 border-white/20 shadow-2xl">
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-[3px] border-[#112347] animate-pulse shadow-sm"></div>
+                    </div>
+                </div>
+                
+                <button onclick="switchTheme()" class="w-11 h-11 bg-white/5 rounded-full border border-white/10 flex items-center justify-center click-press shadow-inner glass transition-colors hover:bg-white/10">
+                    <svg id="icon-sun" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-[24px] h-[24px] text-amber-300 drop-shadow-[0_0_5px_rgba(252,211,77,0.5)]"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-2.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                    <svg id="icon-moon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-[20px] h-[20px] text-blue-100"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                </button>
+            </div>
+            <div id="header-text-container" class="transition-all duration-300">
+                <h1 id="header-title" class="text-[28px] font-black tracking-tight leading-tight text-white drop-shadow-md">Good morning</h1>
+                <p id="header-subtitle" class="text-blue-200/80 text-[11px] font-semibold mt-1 tracking-wider uppercase opacity-90"></p>
+            </div>
+        </div>
+    </header>
+
+    <div class="px-5 -mt-6 relative z-40 max-w-7xl mx-auto pb-24">
+        
+        <div id="view-home" class="view-content flex flex-col gap-6">
+            <div id="search-sticky-wrapper" class="sticky top-0 z-50 -mx-5 px-5 py-3 transition-all duration-300 stagger-item">
+                <div class="relative shadow-[0_15px_30px_rgba(0,0,0,0.08)] rounded-[2rem] bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 transition-all hover:shadow-lg">
+                    <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Search cement, tiles, rebars..." class="w-full bg-transparent rounded-[2rem] px-14 py-[18px] outline-none font-bold text-[13px] text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 absolute left-5 top-[18px] text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
+            </div>
+            <div id="dynamic-home-content" class="flex flex-col"></div>
+        </div>
+
+        <div id="view-trending" class="view-content hidden space-y-6 mt-6">
+            <div class="flex justify-between items-end mb-2">
+                <h2 class="text-3xl font-black tracking-tighter">Market Watch</h2>
+                <span class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> Live</span>
+            </div>
+            
+            <div id="trend-news-bar" class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-xl hidden transition-all mb-4">
+                <p class="text-xs font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <span id="trend-news-text">Market trends updating...</span>
+                </p>
+            </div>
+
+            <div id="trending-feed" class="space-y-6"></div>
+        </div>
+
+        <div id="view-cart" class="view-content hidden mt-6">
+            <h2 class="text-3xl font-black tracking-tighter mb-6 text-center">My Cart</h2>
+            <div id="cart-items-container" class="flex flex-col gap-4 mb-6"></div>
+            
+            <div id="cart-footer" class="hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-3xl p-5 border dark:border-gray-700 shadow-md mb-6 relative overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="absolute -right-4 -top-4 w-24 h-24 text-gray-200 dark:text-gray-700 opacity-50 pointer-events-none">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                    </svg>
+                    <h3 class="font-black text-sm mb-1 relative z-10">Smart Delivery Estimator</h3>
+                    
+                    <p class="text-[10px] text-gray-400 mb-2 font-bold relative z-10 mt-4">Select Dar Es Salaam Zone</p>
+                    <select id="delivery-zone" onchange="calculateDelivery()" class="w-full bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-xl px-4 py-3 outline-none font-bold text-xs mb-4 relative z-10">
+                        <option value="0">Self Pickup (Store Collection)</option>
+                        <option value="1">Tegeta / Boko / Bunju</option>
+                        <option value="1.2">Mbezi / Kimara</option>
+                        <option value="1.5">Kigamboni (Includes Toll)</option>
+                        <option value="0.8">Kinondoni / Posta</option>
+                    </select>
+
+                    <p class="text-[10px] text-gray-400 mb-2 font-bold relative z-10 mt-2">Delivery Contact Number</p>
+                    <input type="tel" id="delivery-phone" placeholder="e.g. 0754... (For the driver)" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 outline-none font-bold text-xs mb-4 relative z-10 focus:ring-2 focus:ring-green-500">
+
+                    <div id="delivery-result-box" class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-800 transition-all flex items-center justify-between relative z-10 mt-2">
+                        <div class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-600 dark:text-green-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                            </svg>
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-green-800 dark:text-green-300">Transport Method</p>
+                                <p class="text-sm font-black text-green-900 dark:text-white" id="vehicle-name">Store Pickup</p>
+                            </div>
+                        </div>
+                        <span class="text-lg font-black text-green-900 dark:text-white" id="transport-cost-display">Free</span>
+                    </div>
+                </div>
+
+                <div class="border-t dark:border-gray-700 pt-6">
+                    <div class="flex justify-between text-xs font-bold text-gray-500 mb-2 px-2"><span>Subtotal</span><span id="cart-subtotal">TZS 0</span></div>
+                    <div class="flex justify-between text-xs font-bold text-green-500 mb-4 px-2"><span>Transport</span><span id="cart-transport">TZS 0</span></div>
+                    <div class="flex justify-between text-2xl font-black mb-8 px-2"><span>Total</span><span id="cart-total-price" class="text-green-600 dark:text-green-400">TZS 0</span></div>
+                    
+                    <button onclick="checkoutWhatsApp()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-[1.5rem] font-bold click-press text-xs tracking-widest mb-4 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
+    Just Order via WhatsApp
+</button>
+
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-[2rem] p-5 border border-gray-200 dark:border-gray-700 mt-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-[40px] pointer-events-none"></div>
+                        
+                        <div class="flex items-center gap-2 mb-2 relative z-10">
+                            <span class="bg-green-500 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Secured</span>
+                            <h3 class="text-sm font-black text-gray-900 dark:text-white">Payment Method</h3>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mb-5 font-medium relative z-10">Mobile money is supported for quick checkout.</p>
+                        
+                        <div class="mb-4 relative z-10">
+                            <div class="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-xl p-4 flex items-center justify-between shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-600 dark:text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+                                    <span class="text-xs font-black text-green-800 dark:text-green-400">Mobile Money Network</span>
+                                </div>
+                                <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-sm">✓</div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="selected-payment-method" value="mobile">
+
+                        <div id="phone-input-wrapper" class="relative z-10 transition-all duration-300">
+                            <input type="tel" id="phone-number" placeholder="Enter Mobile Money Number (e.g. 0754...)" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3.5 outline-none font-bold text-xs mb-4 focus:ring-2 focus:ring-green-500 transition-all shadow-inner">
+                        </div>
+                        
+                        <button onclick="processCheckout()" id="pay-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-[1.5rem] font-black shadow-[0_10px_20px_rgba(22,163,74,0.3)] click-press uppercase text-xs tracking-widest flex items-center justify-center gap-2 transition-colors relative z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+                            Send Prompt to Phone
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-profile" class="view-content hidden mt-10">
+            <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] p-6 shadow-xl border border-transparent dark:border-gray-700 text-center relative mb-8 flex flex-col items-center">
+                <div class="relative -mt-16 mb-4 group cursor-pointer z-10" onclick="document.getElementById('profile-upload').click()">
+                    <img id="p-image" src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff&size=128" class="w-28 h-28 rounded-full object-cover border-[6px] border-white dark:border-gray-800 shadow-xl click-press transition-transform bg-white dark:bg-gray-800">
+                    <div class="absolute bottom-1 right-1 bg-green-600 text-white w-8 h-8 rounded-full shadow-md border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" /></svg>
+                    </div>
+                    <input type="file" id="profile-upload" class="hidden" accept="image/*" onchange="handleProfileUpload(event)">
+                </div>
+                
+                <div class="flex items-center justify-center gap-3 mb-1 mt-2">
+                    <h2 id="p-name" class="text-2xl font-black text-gray-800 dark:text-white leading-tight">User</h2>
+                    <button onclick="openEditNameModal()" class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 hover:text-green-600 transition-colors click-press shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path d="m2.695 14.762-1.262 3.155a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.886L17.5 5.501a2.121 2.121 0 0 0-3-3L3.58 13.419a4 4 0 0 0-.885 1.343Z" /></svg>
+                    </button>
+                </div>
+                
+                <p id="p-email" class="text-xs text-gray-400 font-medium mb-4">user@email.com</p>
+                <div id="vip-badge" class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-gray-200 text-gray-600 shadow-sm inline-block">Standard Builder</div>
+            </div>
+
+            <div id="tracker-card" onclick="navigateTo('history')" class="bg-gray-900 text-white p-6 rounded-[2.5rem] shadow-2xl mb-8 relative overflow-hidden stagger-item click-press group cursor-pointer transition-transform hover:scale-[1.02]">
+                <div class="relative z-10">
+                    <div class="flex justify-between items-start mb-1">
+                        <div>
+                            <p class="text-[10px] uppercase font-black tracking-widest opacity-60 flex items-center gap-2">Total Project Spend</p>
+                            <p id="vip-perk-text" class="text-[8px] text-amber-400 font-bold hidden mt-1">★ 50% Off Transport Active</p>
+                        </div>
+                        <div class="bg-white/10 p-2 rounded-xl shadow-inner backdrop-blur-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-green-400"><path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 0 1 8.25-8.25.75.75 0 0 1 .75.75v6.75H18a.75.75 0 0 1 .75.75 8.25 8.25 0 0 1-16.5 0Z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M12.75 3a.75.75 0 0 1 .75-.75 8.25 8.25 0 0 1-.75.75h-7.5a.75.75 0 0 1-.75-.75V3Z" clip-rule="evenodd" /></svg>
+                        </div>
+                    </div>
+                    <h3 id="total-project-cost" class="text-3xl font-black mb-4">TZS 0</h3>
+                    
+                    <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-3">
+                        <div id="cost-progress" class="bg-green-500 h-full transition-all duration-1000" style="width: 5%"></div>
+                    </div>
+                    <div class="flex justify-end items-center text-green-400 text-[10px] font-bold tracking-widest uppercase group-hover:text-white transition-colors">
+                        View Analytics <span class="ml-1 text-sm group-hover:translate-x-1 transition-transform">›</span>
+                    </div>
+                </div>
+                <div class="absolute -right-4 -bottom-4 text-white/5 text-8xl font-black italic pointer-events-none">COST</div>
+            </div>
+
+            <h3 class="font-black text-lg mb-4 px-2 tracking-tight">My Project Phases</h3>
+            <div class="grid grid-cols-3 gap-3 mb-8 stagger-item" style="animation-delay: 0.1s">
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-[1.5rem] border dark:border-gray-700 shadow-sm click-press flex flex-col items-center text-center transition-shadow hover:shadow-md" onclick="renderWishlistPhase('Foundation')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-2 text-gray-700 dark:text-gray-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                    </svg>
+                    <p class="font-black text-[10px] text-gray-800 dark:text-white">Foundation</p>
+                    <p class="text-[9px] text-green-500 font-black mt-2" id="count-foundation">0 Items</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-[1.5rem] border dark:border-gray-700 shadow-sm click-press flex flex-col items-center text-center transition-shadow hover:shadow-md" onclick="renderWishlistPhase('Roofing')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-2 text-gray-700 dark:text-gray-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                    <p class="font-black text-[10px] text-gray-800 dark:text-white">Roofing</p>
+                    <p class="text-[9px] text-green-500 font-black mt-2" id="count-roofing">0 Items</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-[1.5rem] border dark:border-gray-700 shadow-sm click-press flex flex-col items-center text-center transition-shadow hover:shadow-md" onclick="renderWishlistPhase('Finishing')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mb-2 text-gray-700 dark:text-gray-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.813-3.814a1.5 1.5 0 00-2.122-2.122L15.3 8.536m-8.36 8.362l-1.077-1.077a1.5 1.5 0 012.122-2.122L9.53 14.78c-.24.24-.455.5-.644.773z" />
+                    </svg>
+                    <p class="font-black text-[10px] text-gray-800 dark:text-white">Finishing</p>
+                    <p class="text-[9px] text-green-500 font-black mt-2" id="count-finishing">0 Items</p>
+                </div>
+            </div>
+            
+            <div id="wishlist-render-area" class="mb-8 hidden"></div>
+            
+            <div class="hidden bg-white dark:bg-slate-900/50 p-6 rounded-[2rem] shadow-sm border border-gray-200 dark:border-white/5 mb-8 transition-colors stagger-item" style="animation-delay: 0.15s">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-blue-500"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
+                            Expense Tracker
+                        </h2>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Total Project Spend</p>
+                    </div>
+                    <h3 id="expense-total-display" class="text-lg sm:text-xl font-black text-green-600 dark:text-green-500">TZS 0</h3>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6 items-center">
+                    <div class="relative h-48 w-full md:w-1/2 flex justify-center shrink-0">
+                        <canvas id="expensePieChart"></canvas>
+                        <div id="empty-chart-msg" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 opacity-50 mb-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                            </svg>
+                            <p class="text-[10px] font-bold uppercase tracking-widest">No expenses yet</p>
+                        </div>
+                    </div>
+                    
+                    <div id="expense-legend" class="space-y-3 max-h-48 overflow-y-auto w-full md:w-1/2 pr-2 hide-scrollbar">
+                        <p class="text-xs text-gray-400 font-bold text-center py-4">Analyzing your receipts...</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="font-black text-lg mb-4 px-2 mt-4 tracking-tight">Settings & Support</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] p-1 border dark:border-gray-700 shadow-sm mb-6 stagger-item" style="animation-delay: 0.2s">
+                <div class="flex items-center justify-between p-5 border-b dark:border-gray-700">
+                    <div class="flex items-center gap-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-600 dark:text-gray-300">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="font-bold text-sm">Notifications</span>
+                    </div>
+                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" id="notif-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" onclick="toggleNotifications()"/>
+                        <label for="notif-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                    </div>
+                </div>
+
+                <button onclick="navigateTo('cs')" class="w-full flex items-center justify-between p-5 hover:bg-gray-50 dark:hover:bg-gray-700 transition click-press border-b dark:border-gray-700">
+                    <div class="flex items-center gap-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-600 dark:text-gray-300">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                        </svg>
+                        <span class="font-bold text-sm">Customer Support</span>
+                    </div>
+                    <span class="text-gray-400 font-bold text-xl">›</span>
+                </button>
+
+                <button onclick="navigateTo('legal')" class="w-full flex items-center justify-between p-5 hover:bg-gray-50 dark:hover:bg-gray-700 transition click-press border-b dark:border-gray-700">
+                    <div class="flex items-center gap-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-600 dark:text-gray-300">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                        <span class="font-bold text-sm">Legal & Policies</span>
+                    </div>
+                    <span class="text-gray-400 font-bold text-xl">›</span>
+                </button>
+
+                <button onclick="logoutUser()" class="w-full flex items-center gap-4 p-5 hover:bg-red-50 dark:hover:bg-red-900/10 transition click-press text-red-500 rounded-b-[2.5rem]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                    <span class="font-bold text-sm text-left">Logout from Account</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="view-history" class="view-content hidden mt-2">
+            <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] p-6 shadow-xl border dark:border-gray-700 mb-6 stagger-item">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3 click-press cursor-pointer" onclick="goBack()">
+                        <span class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center shadow-sm font-bold border border-transparent dark:border-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                        </span>
+                        <h2 class="text-lg font-black">Financial Overview</h2>
+                    </div>
+                </div>
+                
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center mb-1">Total Lifetime Spend (Paid)</p>
+                <h2 id="history-total" class="text-4xl font-black text-center text-gray-900 dark:text-white mb-6 tracking-tighter">TZS 0</h2>
+
+                <div class="space-y-4 mb-6">
+                    <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Materials</span>
+                        <span id="history-materials-val" class="text-gray-900 dark:text-white">TZS 0</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Transport</span>
+                        <span id="history-transport-val" class="text-gray-900 dark:text-white">TZS 0</span>
+                    </div>
+                    
+                    <div class="w-full bg-gray-100 dark:bg-gray-700 h-3 rounded-full overflow-hidden flex shadow-inner mt-2">
+                        <div id="bar-materials" class="bg-green-500 h-full transition-all duration-1000" style="width: 0%"></div>
+                        <div id="bar-transport" class="bg-blue-500 h-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-4">
+                    <button onclick="downloadStatement()" class="flex-1 py-3 bg-gray-900 text-white rounded-2xl font-black click-press shadow-md text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                        Save PDF
+                    </button>
+                    <button onclick="shareStatement()" class="flex-1 py-3 bg-[#25D366] text-white rounded-2xl font-black click-press shadow-md text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+                        Share
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-4 px-2">
+                <h3 class="font-black text-lg">Transaction Feed</h3>
+                <select id="history-filter" onchange="renderHistory()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-bold rounded-xl px-3 py-1.5 outline-none shadow-sm cursor-pointer">
+                    <option value="ALL">All Receipts</option>
+                    <option value="PAID">Paid / Success</option>
+                    <option value="PENDING">Pending</option>
+                </select>
+            </div>
+
+            <div id="active-tracking-area" class="mb-8 hidden">
+                <h3 class="font-black text-lg mb-4 px-2 flex items-center gap-2">
+                    <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
+                    Live Deliveries
+                </h3>
+                <div id="tracking-feed" class="flex flex-col gap-4"></div>
+            </div>
+
+            <div id="receipt-feed" class="flex flex-col gap-4 mb-6"></div>
+            
+            <button onclick="clearHistory()" class="w-full py-4 text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/20 rounded-[2rem] click-press mb-4 transition-colors hover:bg-red-100">Clear Transaction History</button>
+        </div>
+
+        <div id="view-cs" class="view-content hidden mt-4 h-[75vh]">
+            <div class="flex items-center gap-3 mb-4 click-press cursor-pointer px-2" onclick="goBack()">
+                <span class="w-8 h-8 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm font-bold border border-transparent dark:border-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                </span>
+                <h2 class="text-xl font-black">Live Support</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <a href="tel:+255743924467" class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 click-press hover:bg-blue-100 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.596-5.265-3.965-6.861-6.86l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Call Us</span>
+                </a>
+                <a href="https://wa.me/255743924467" target="_blank" class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 click-press hover:bg-green-100 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
+                    <span class="text-[10px] font-black uppercase tracking-widest">WhatsApp</span>
+                </a>
+            </div>
+            
+            <div class="h-full bg-white dark:bg-gray-800 rounded-[2.5rem] border dark:border-gray-700 shadow-xl flex flex-col overflow-hidden relative">
+                <div class="bg-gray-50 dark:bg-gray-900 p-4 border-b dark:border-gray-700 flex items-center gap-3 z-10 shrink-0">
+                    <div class="relative">
+                        <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" /></svg>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full animate-pulse"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-gray-900 dark:text-white">In-App Chat</h3>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Typically replies in minutes</p>
+                    </div>
+                </div>
+
+                <div id="customer-chat-area" class="flex-grow overflow-y-auto p-5 flex flex-col gap-4 bg-[#f4f6f9] dark:bg-[#020617]/50">
+                    <div class="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest my-2">Chat Started</div>
+                    <div class="max-w-[85%] p-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm rounded-2xl rounded-tl-none shadow-sm border dark:border-gray-700 self-start font-medium leading-relaxed">
+                        Hello! I am your dedicated UjenziSmart project manager. How can I help you with your materials today?
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 flex gap-2 shrink-0 z-10">
+                    <input type="text" id="customer-chat-input" onkeypress="if(event.key === 'Enter') sendCustomerMessage()" class="flex-grow bg-gray-100 dark:bg-gray-900 rounded-xl px-5 py-4 text-sm font-medium outline-none border border-transparent focus:border-green-500 dark:text-white transition-all" placeholder="Type your message...">
+                    <button onclick="sendCustomerMessage()" class="w-14 h-14 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold flex items-center justify-center click-press shadow-md transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-legal" class="view-content hidden">
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] border dark:border-gray-700 shadow-xl mt-6">
+                <h3 class="font-black text-xl mb-3 text-green-600">Terms of Service</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed font-medium">UjenziSmart provides a platform for estimating and ordering construction materials in Tanzania. Prices are indicative and subject to market changes.</p>
+                <h3 class="font-black text-xl mb-3 text-green-600">Privacy Policy</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-medium">We collect your data solely to fulfill orders and provide accurate AI estimations. Your data is encrypted and never sold.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="fs-product-view" class="fixed inset-0 z-[999] hidden bg-[#f4f6f9] dark:bg-gray-900 overflow-y-auto overflow-x-hidden transition-transform duration-300 translate-x-full">
+        <div class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 shadow-sm">
+            <button onclick="closeProductFullScreen()" class="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center click-press text-gray-800 dark:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+            </button>
+            <div class="flex gap-3">
+               <button onclick="window.closeProductFullScreen(); setTimeout(()=>window.navigateTo('cart'), 300)" class="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center click-press text-gray-800 dark:text-gray-200 relative">
+                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+               </button>
+            </div>
+        </div>
+
+        <div class="w-full bg-white dark:bg-gray-900 relative border-b dark:border-gray-800">
+            <img id="fs-modal-img" class="w-full h-80 sm:h-96 object-contain p-4 bg-gray-50 dark:bg-gray-800 transition-opacity duration-300">
+            
+            <div id="fs-modal-gallery-thumbs" class="flex gap-3 p-4 overflow-x-auto hide-scrollbar bg-gray-50 dark:bg-gray-800">
+                </div>
+        </div>
+
+        <div class="p-5 pb-32">
+            <div class="flex items-center gap-2 mb-2">
+                <div class="flex text-amber-400 text-sm">★★★★★</div>
+                <span id="fs-modal-rating-text" class="text-xs text-gray-500 font-bold"></span>
+            </div>
+            
+            <h3 id="fs-modal-title" class="text-2xl font-black mb-2 text-gray-900 dark:text-white leading-tight"></h3>
+            <p id="fs-modal-brand-model" class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4"></p>
+            
+            <div class="mb-4">
+                <span id="fs-modal-stock-badge" class="px-3 py-1 bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black rounded border border-green-100 dark:border-green-800 inline-block uppercase tracking-widest">Stock: Checking...</span>
+            </div>
+
+            <span id="fs-modal-price" class="text-3xl font-black text-green-600 dark:text-green-400 block mb-6"></span>
+            <div id="fs-variation-container" class="mb-6 hidden">
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Available Options</label>
+                <div id="fs-variation-pills" class="flex flex-wrap gap-2">
+                    </div>
+            </div>
+
+            <h4 class="font-black text-sm mb-2 dark:text-white">Product Description</h4>
+            <p id="fs-modal-desc" class="text-gray-500 dark:text-gray-400 text-sm mb-8 leading-relaxed font-medium"></p>
+            
+            <div id="fs-fbt-section" class="mb-8 hidden">
+                <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Frequently Bought Together</p>
+                <div class="flex items-center gap-3 bg-white dark:bg-gray-800 p-3 rounded-2xl border dark:border-gray-700 shadow-sm">
+                    <img id="fs-fbt-img" src="" class="w-16 h-16 rounded-xl object-cover border dark:border-gray-600">
+                    <div class="flex-grow"><p id="fs-fbt-title" class="text-sm font-bold leading-tight dark:text-white"></p><p id="fs-fbt-price" class="text-xs text-green-600 dark:text-green-400 font-black mt-1"></p></div>
+                    <input type="checkbox" id="fs-fbt-checkbox" class="w-6 h-6 accent-green-500 rounded">
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-[2rem] p-5 shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
+                <h4 class="font-black text-sm mb-3 dark:text-white">Project Planner</h4>
+                <div class="flex gap-2">
+                    <select id="fs-phase-selector" class="flex-grow bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 outline-none text-xs font-bold dark:text-gray-200">
+                        <option value="Foundation">Phase 1: Foundation</option><option value="Roofing">Phase 2: Roofing</option><option value="Finishing">Phase 3: Finishing</option>
+                    </select>
+                    <button onclick="saveToPhase()" class="px-5 py-4 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl font-black text-[10px] uppercase tracking-widest click-press shadow-sm flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>
+                        Save
+                    </button>
+                </div>
+            </div>
+
+            <div class="border-t dark:border-gray-800 pt-6">
+                <h4 class="font-black text-sm mb-4 dark:text-white">Customer Reviews</h4>
+                <div id="fs-user-added-reviews"></div>
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl mb-4 border border-gray-100 dark:border-gray-700 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-500 mb-1 flex items-center gap-1">
+                        <span class="text-amber-400 text-xs">★★★★★</span> Verified Buyer
+                    </p>
+                    <p id="fs-modal-review-text" class="text-xs font-medium text-gray-700 dark:text-gray-300 italic"></p>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+                    <h4 class="text-xs font-black mb-2 dark:text-white">Leave a Review</h4>
+                    <div class="flex gap-1 mb-3 text-gray-300 text-2xl" id="fs-star-rating-selector">
+                        <span onclick="window.setRating(1)" class="cursor-pointer text-amber-400">★</span>
+                        <span onclick="window.setRating(2)" class="cursor-pointer text-amber-400">★</span>
+                        <span onclick="window.setRating(3)" class="cursor-pointer text-amber-400">★</span>
+                        <span onclick="window.setRating(4)" class="cursor-pointer text-amber-400">★</span>
+                        <span onclick="window.setRating(5)" class="cursor-pointer text-amber-400">★</span>
+                    </div>
+                    <textarea id="fs-review-text" rows="3" class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-xs outline-none focus:border-green-500 dark:text-white transition-colors shadow-sm" placeholder="Write your feedback here..."></textarea>
+                    <button onclick="window.submitReview()" class="mt-3 w-full py-4 bg-gray-900 dark:bg-gray-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest click-press transition-colors hover:bg-black shadow-md">Submit Review</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 pb-6 flex items-center gap-3 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+            <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 border border-gray-200 dark:border-gray-700 shadow-inner shrink-0">
+                <button onclick="changeQty(-1)" class="w-12 h-12 flex items-center justify-center font-black text-gray-500 text-xl click-press hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors">-</button>
+                <input type="number" id="fs-modal-qty" value="1" min="1" onblur="validateQty()" class="w-12 bg-transparent text-center font-black outline-none text-lg text-gray-900 dark:text-white">
+                <button onclick="changeQty(1)" class="w-12 h-12 flex items-center justify-center font-black text-gray-500 text-xl click-press hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors">+</button>
+            </div>
+            <button onclick="window.addToBasketAction()" class="flex-grow py-4 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_10px_20px_rgba(22,163,74,0.3)] click-press transition-colors h-14">Add to Basket</button>
+        </div>
+    </div>
+
+    <div id="edit-name-modal" class="fixed inset-0 z-[150] hidden bg-black/60 flex items-center justify-center transition-opacity backdrop-blur-sm px-4">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl animate-stagger-in border border-transparent dark:border-gray-700">
+            <h3 class="text-xl font-black mb-1 text-center dark:text-white">Edit Profile</h3>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center mb-5">Update your display name</p>
+            <input type="text" id="edit-name-input" class="w-full bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl outline-none border dark:border-gray-700 font-bold text-sm text-gray-800 dark:text-gray-100 mb-5 focus:ring-2 focus:ring-green-500 transition-shadow">
+            <div class="flex gap-3">
+                <button onclick="closeEditNameModal()" class="flex-1 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-black click-press text-xs uppercase tracking-widest">Cancel</button>
+                <button onclick="saveNewName()" class="flex-1 py-3.5 bg-green-600 text-white rounded-2xl font-black click-press shadow-md text-xs uppercase tracking-widest">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-hub-modal" class="fixed inset-0 z-[150] hidden bg-black/60 flex items-end justify-center transition-opacity backdrop-blur-sm">
+        <div id="ai-hub-sheet" class="bg-white dark:bg-gray-900 w-full max-w-md h-[85vh] rounded-t-[2.5rem] flex flex-col overflow-hidden shadow-2xl bottom-sheet">
+            <div class="bg-green-600 p-5 flex justify-between items-center text-white shrink-0 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-2 rounded-xl shadow-inner text-white">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M9 4.5a.75.75 0 0 1 .721.544l.813 2.846a3.75 3.75 0 0 0 2.576 2.576l2.846.813a.75.75 0 0 1 0 1.442l-2.846.813a3.75 3.75 0 0 0-2.576 2.576l-.813 2.846a.75.75 0 0 1-1.442 0l-.813-2.846a3.75 3.75 0 0 0-2.576-2.576l-2.846-.813a.75.75 0 0 1 0-1.442l2.846-.813A3.75 3.75 0 0 0 7.466 7.89l.813-2.846A.75.75 0 0 1 9 4.5ZM18 1.5a.75.75 0 0 1 .728.568l.258 1.036c.236.94.97 1.674 1.91 1.906l1.036.258a.75.75 0 0 1 0 1.45l-1.037.259a3.003 3.003 0 0 0-1.91 1.906l-.258 1.036a.75.75 0 0 1-1.455 0l-.258-1.036a3.003 3.003 0 0 0-1.91-1.906l-1.036-.259a.75.75 0 0 1 0-1.45l1.036-.258a3.003 3.003 0 0 0 1.91-1.906l.258-1.036A.75.75 0 0 1 18 1.5ZM16.5 15a.75.75 0 0 1 .712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 0 1 0 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 0 1-1.422 0l-.395-1.183a1.5 1.5 0 0 0-.948-.948l-1.183-.395a.75.75 0 0 1 0-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0 1 16.5 15Z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <div><h2 class="font-black text-sm leading-tight text-white">AI Hub</h2><p class="text-[9px] text-green-100 font-bold uppercase tracking-widest mt-1">Smart Construction</p></div>
+                </div>
+                <button onclick="closeAiHub()" class="w-8 h-8 flex items-center justify-center bg-black/20 hover:bg-black/30 rounded-full font-bold transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <div class="flex border-b dark:border-gray-700 shrink-0 bg-white dark:bg-gray-900">
+                <button onclick="switchAiTab('chat')" id="tab-chat" class="flex-1 py-4 text-xs font-black text-green-600 border-b-[3px] border-green-600 uppercase tracking-widest transition-colors">Advisor</button>
+                <button onclick="switchAiTab('calc')" id="tab-calc" class="flex-1 py-4 text-xs font-black text-gray-400 border-b-[3px] border-transparent uppercase tracking-widest transition-colors">Estimator</button>
+            </div>
+
+            <div id="ai-content-chat" class="flex-grow flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
+                <div id="chat-box" class="flex-grow p-6 overflow-y-auto flex flex-col gap-4">
+                    <div class="p-4 bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-[2rem] rounded-tl-none mr-auto mb-2 text-sm font-medium shadow-sm">Habari! Ask me any construction question.</div>
+                </div>
+                <div class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 flex gap-2 shrink-0">
+                    <input type="text" id="chat-input" onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-grow bg-gray-100 dark:bg-gray-900 rounded-xl px-5 py-4 text-sm font-medium outline-none border dark:border-gray-600 focus:ring-2 focus:ring-green-500 transition-shadow" placeholder="Ask anything...">
+                    <button id="send-btn" onclick="sendMessage()" class="w-14 h-14 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold click-press shadow-md transition-colors flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="ai-content-calc" class="flex-grow p-6 overflow-y-auto hidden bg-gray-50 dark:bg-gray-900">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border dark:border-gray-700 shadow-sm">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-4 text-center tracking-widest">Material Calculator</p>
+                    <select id="calc-type" class="w-full bg-gray-50 dark:bg-gray-900 p-4 rounded-2xl mb-4 outline-none border dark:border-gray-700 font-bold text-sm text-gray-700 dark:text-gray-200">
+                        <option value="wall">Wall (Blocks & Cement)</option><option value="floor">Floor (Tiles 40x40)</option><option value="roof">Roof (Iron Sheets)</option>
+                    </select>
+                    <div class="flex gap-3 mb-6">
+                        <input type="number" id="calc-l" placeholder="Length (m)" class="w-full bg-gray-50 dark:bg-gray-900 p-4 rounded-2xl outline-none border dark:border-gray-700 font-bold text-sm text-gray-700 dark:text-gray-200">
+                        <input type="number" id="calc-w" placeholder="Width/Height" class="w-full bg-gray-50 dark:bg-gray-900 p-4 rounded-2xl outline-none border dark:border-gray-700 font-bold text-sm text-gray-700 dark:text-gray-200">
+                    </div>
+                    <button onclick="runCalculation()" class="w-full py-4 bg-green-600 text-white rounded-2xl font-black click-press shadow-lg text-sm uppercase tracking-widest">Calculate Now</button>
+                    <div id="calc-results" class="hidden mt-6 p-5 bg-green-50 dark:bg-green-900/20 rounded-2xl text-sm font-medium text-green-900 dark:text-green-100 border border-green-100 dark:border-green-800 leading-relaxed shadow-inner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="openAiHub()" class="fixed bottom-24 right-6 z-[100] w-[68px] h-[68px] gradient-pulse rounded-full flex flex-col items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.6)] border-2 border-white/20 click-press animate-stagger-in group" style="animation-delay: 0.5s">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-white mb-0.5 group-hover:scale-110 transition-transform drop-shadow-md">
+            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" />
+        </svg>
+        <span class="font-black text-[7px] uppercase tracking-widest text-white mt-0.5 drop-shadow-md">Expert</span>
+    </button>
+
+    <nav class="fixed bottom-0 w-full bg-white/95 dark:bg-[#0f172a]/95 glass border-t dark:border-gray-800 px-6 py-2 flex justify-around items-center z-50">
+        <button onclick="navigateTo('home', false, true)" id="nav-home" class="nav-btn active-nav flex flex-col items-center gap-1 text-gray-400 text-[10px] font-bold transition-all p-2 click-press w-16 text-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mb-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
+            <span>Home</span>
+        </button>
+        <button onclick="navigateTo('trending', false, true)" id="nav-trending" class="nav-btn flex flex-col items-center gap-1 text-gray-400 text-[10px] font-bold transition-all p-2 click-press w-16">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mb-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+            <span>Watch</span>
+        </button>
+        <button onclick="navigateTo('cart', false, true)" id="nav-cart" class="nav-btn flex flex-col items-center gap-1 text-gray-400 text-[10px] font-bold transition-all p-2 relative click-press w-16">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mb-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+            <span>Cart</span>
+            <span id="cart-badge" class="hidden absolute top-1 right-2 bg-red-500 text-white text-[8px] px-1.5 rounded-full font-black ring-2 ring-white dark:ring-gray-900 shadow-sm">0</span>
+        </button>
+        <button onclick="navigateTo('profile', false, true)" id="nav-profile" class="nav-btn flex flex-col items-center gap-1 text-gray-400 text-[10px] font-bold transition-all p-2 click-press w-16">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mb-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <script>
+        function updateThemeIcon() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const sun = document.getElementById('icon-sun');
+            const moon = document.getElementById('icon-moon');
+            if(sun && moon) {
+                sun.style.display = isDark ? 'block' : 'none';
+                moon.style.display = isDark ? 'none' : 'block';
+            }
+        }
+        function switchTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        document.addEventListener("DOMContentLoaded", updateThemeIcon);
+
+        window.addEventListener('scroll', () => {
+            const sw = document.getElementById('search-sticky-wrapper');
+            if(sw) {
+                if(window.scrollY > 40) {
+                    sw.classList.add('bg-[#f4f6f9]/95', 'dark:bg-gray-900/95', 'backdrop-blur-md', 'border-b', 'border-gray-200', 'dark:border-gray-800');
+                    sw.classList.remove('py-3');
+                    sw.classList.add('py-4');
+                } else {
+                    sw.classList.remove('bg-[#f4f6f9]/95', 'dark:bg-gray-900/95', 'backdrop-blur-md', 'border-b', 'border-gray-200', 'dark:border-gray-800');
+                    sw.classList.remove('py-4');
+                    sw.classList.add('py-3');
+                }
+            }
+        });
+
+        window.addEventListener('popstate', (event) => {
+            const fsModal = document.getElementById('fs-product-view');
+            const aiHubSheet = document.getElementById('ai-hub-sheet');
+            const editModal = document.getElementById('edit-name-modal');
+            
+            let sheetClosed = false;
+            if (fsModal && !fsModal.classList.contains('hidden') && !fsModal.classList.contains('translate-x-full')) { 
+                window.closeProductFullScreen(); 
+                sheetClosed = true; 
+            }
+            if (aiHubSheet && aiHubSheet.classList.contains('open')) { window.closeAiHub(); sheetClosed = true; }
+            if (editModal && !editModal.classList.contains('hidden')) { window.closeEditNameModal(); sheetClosed = true; }
+            
+            if (sheetClosed) return;
+
+            if (event.state) {
+                if (event.state.category) { window.openCategory(event.state.category, true); } 
+                else if (event.state.view) { window.navigateTo(event.state.view, true); } 
+                else { window.navigateTo('home', true); }
+            } else { window.navigateTo('home', true); }
+        });
+        
+        if (!history.state) { history.replaceState({ view: 'home' }, '', '#home'); }
+
+        const categoryImages = {
+            'Foundation': 'https://images.unsplash.com/photo-1590060417941-2f34888463f1?w=400',
+            'Roofing': 'https://images.unsplash.com/photo-1635424710928-0544e8512eae?w=400',
+            'Plumbing': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400',
+            'Electrical': 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400',
+            'Finishing': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400',
+            'Tools': 'https://images.unsplash.com/photo-1530124560677-bdaea02c9a9d?w=400'
+        };
+        const catMap = {
+            'Foundation': 'Foundation & Structural', 'Roofing': 'Roofing Materials', 'Finishing': 'Finishing & Painting',
+            'Tools': 'Tools & Hardware', 'Plumbing': 'Plumbing', 'Electrical': 'Electrical'
+        };
+
+        window.navigateTo = function(viewName, isHistoryBack = false, isTab = false) {
+            document.querySelectorAll('.view-content').forEach(v => {
+                v.classList.add('hidden');
+                v.style.animation = 'none'; 
+            });
+            const targetView = document.getElementById(`view-${viewName}`);
+            if(targetView) {
+                targetView.classList.remove('hidden');
+                targetView.offsetHeight; 
+                if (isTab) targetView.style.animation = 'tabFadeScale 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+                else if (isHistoryBack) targetView.style.animation = 'slideInLeftNative 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+                else targetView.style.animation = 'slideInRightNative 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+            }
+
+            document.querySelectorAll('.nav-btn').forEach(btn => { btn.classList.remove('active-nav', 'text-green-600'); });
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if(activeBtn) activeBtn.classList.add('active-nav', 'text-green-600');
+
+            const backBtn = document.getElementById('header-back-btn');
+            const headerTitle = document.getElementById('header-title');
+            const headerSub = document.getElementById('header-subtitle');
+            
+            const mainTabs = ['home', 'trending', 'cart', 'profile'];
+            if (mainTabs.includes(viewName)) {
+                backBtn.classList.add('hidden');
+                if(viewName === 'home') window.setGreeting();
+                if(viewName === 'trending') { headerTitle.textContent = "Market Watch"; headerSub.textContent = "Live Price Tracking"; }
+                if(viewName === 'cart') { headerTitle.textContent = "Your Cart"; headerSub.textContent = "Secure Checkout"; }
+                if(viewName === 'profile') { headerTitle.textContent = "Profile"; headerSub.textContent = "Manage your account"; }
+            } else {
+                backBtn.classList.remove('hidden');
+                if(viewName === 'cs') { headerTitle.textContent = "Support"; headerSub.textContent = "We are here to help"; }
+                if(viewName === 'legal') { headerTitle.textContent = "Legal"; headerSub.textContent = "Policies & Terms"; }
+                if(viewName === 'history') { headerTitle.textContent = "My Expenses"; headerSub.textContent = "Transaction History & Receipts"; if(typeof window.renderHistory === 'function') window.renderHistory(); }
+            }
+
+            if(!isHistoryBack) history.pushState({ view: viewName }, '', '#' + viewName);
+
+            if(viewName === 'home') { document.getElementById('search-input').value = ''; if(typeof window.renderHomeBase === 'function') window.renderHomeBase(); }
+            if(viewName === 'cart') if(typeof window.renderCart === 'function') window.renderCart();
+            if(viewName === 'profile') { 
+                if(typeof window.updateTrackerUI === 'function') window.updateTrackerUI(); 
+                if(typeof window.updateWishlistCounts === 'function') window.updateWishlistCounts(); 
+                const d = document.getElementById('expense-total-display');
+                if(d) d.textContent = `TZS ${(window.appSpend || 0).toLocaleString()}`;
+            }
+            window.scrollTo(0,0);
+        }
+        window.goBack = function() { history.back(); }
+
+        window.checkAuth = function() {
+            const user = JSON.parse(localStorage.getItem('ujenzi_user'));
+            if (user) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                window.setGreeting(); document.getElementById('p-name').textContent = user.name; document.getElementById('p-email').textContent = user.email;
+                const photoSrc = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=10b981&color=fff`;
+                document.getElementById('p-image').src = photoSrc;
+                document.getElementById('notif-toggle').checked = localStorage.getItem('ujenzi_notif') === 'true';
+                if(typeof window.renderHomeBase === 'function') window.renderHomeBase();
+            } else { document.getElementById('auth-screen').classList.remove('hidden'); }
+        }
+
+        window.setGreeting = function() {
+            const user = JSON.parse(localStorage.getItem('ujenzi_user'));
+            if(!user) return;
+            const firstName = user.name.split(' ')[0];
+            const h = new Date().getHours();
+            let g = "Good Evening"; if(h < 12) g = "Good Morning"; else if(h < 17) g = "Good Afternoon";
+            document.getElementById('header-title').textContent = `${g}, ${firstName}`;
+            document.getElementById('header-subtitle').textContent = ``;
+        }
+
+        window.handleProfileUpload = function(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('p-image').src = e.target.result;
+                    let u = JSON.parse(localStorage.getItem('ujenzi_user'));
+                    u.photoURL = e.target.result; localStorage.setItem('ujenzi_user', JSON.stringify(u));
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        window.openEditNameModal = function() {
+            const user = JSON.parse(localStorage.getItem('ujenzi_user'));
+            if(user) document.getElementById('edit-name-input').value = user.name;
+            document.getElementById('edit-name-modal').classList.remove('hidden');
+            history.pushState({ modal: 'edit-name' }, '', '#edit-name');
+        };
+        window.closeEditNameModal = function() { document.getElementById('edit-name-modal').classList.add('hidden'); };
+        window.saveNewName = function() {
+            const newName = document.getElementById('edit-name-input').value.trim();
+            if(!newName) return;
+            let user = JSON.parse(localStorage.getItem('ujenzi_user'));
+            if(user) {
+                user.name = newName; localStorage.setItem('ujenzi_user', JSON.stringify(user));
+                document.getElementById('p-name').textContent = newName; window.setGreeting(); window.closeEditNameModal(); history.back();
+                if(window.updateFirebaseName) window.updateFirebaseName(newName);
+            }
+        };
+
+        window.isGoldVIP = false;
+        window.updateTrackerUI = function() {
+            const spend = parseInt(localStorage.getItem('ujenzi_total_spend') || '0');
+            document.getElementById('total-project-cost').textContent = `TZS ${spend.toLocaleString()}`;
+            document.getElementById('cost-progress').style.width = `${Math.min((spend / 5000000) * 100, 100)}%`;
+
+            const badge = document.getElementById('vip-badge'); const perk = document.getElementById('vip-perk-text');
+            window.isGoldVIP = false;
+            if(spend >= 5000000) {
+                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-amber-400 to-yellow-600 text-white shadow-md inline-block";
+                badge.innerHTML = "👑 Gold Builder"; perk.classList.remove('hidden'); window.isGoldVIP = true;
+            } else if (spend >= 1000000) {
+                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 shadow-md inline-block";
+                badge.innerHTML = "🥈 Silver Builder"; perk.classList.add('hidden');
+            } else {
+                badge.className = "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-gray-200 text-gray-600 shadow-sm inline-block";
+                badge.innerHTML = "Standard Builder"; perk.classList.add('hidden');
+            }
+        }
+
+        window.handleSearch = function() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const container = document.getElementById('dynamic-home-content');
+            if(!query) { window.renderHomeBase(); return; }
+            let results = [];
+            for(let cat in window.productDatabase) {
+                window.productDatabase[cat].forEach(p => { 
+                    // 🟢 NEW: Now searches name, desc, brand, AND model!
+                    const searchStr = `${p.name} ${p.desc} ${p.brand} ${p.model}`.toLowerCase();
+                    if(searchStr.includes(query)) results.push(p); 
+                });
+            }
+            if(results.length === 0) { 
+                container.innerHTML = `<div class="text-center py-16 text-gray-400 font-bold border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl mt-4">No results found.</div>`; 
+                return; 
+            }
+            container.innerHTML = `
+                <div class="flex items-center gap-3 mb-2 click-press cursor-pointer" onclick="document.getElementById('search-input').value=''; window.renderHomeBase();">
+                    <span class="w-8 h-8 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm font-bold border border-transparent dark:border-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                    </span>
+                    <h2 class="text-lg font-bold">Search Results</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-2 md:gap-4">${results.map((p, i) => window.generateInstaCardHTML(p, i)).join('')}</div>`;
+        }
+
+        // 🟢 UPGRADED: V3 INSTAGRAM-STYLE ENDLESS FEED CARDS
+        window.generateInstaCardHTML = function(p, i) {
+            if(!p) return '';
+            
+            // Stack the Brand and Model neatly
+            let brandHtml = p.brand ? `<p class="text-[10px] font-black text-blue-500 uppercase tracking-wider truncate">${p.brand}</p>` : '';
+            let modelHtml = p.model ? `<p class="text-[8px] font-bold text-gray-500 uppercase tracking-wider truncate">${p.model}</p>` : '';
+            
+            // Create a sleek badge for the Weight/Measurement
+            let unitBadge = '';
+            if (p.wt) {
+                unitBadge = `<span class="text-[8px] font-black text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 px-1.5 py-0.5 rounded shadow-sm">${p.wt} ${p.unit || ''}</span>`;
+            }
+
+            return `
+                <div onclick="window.openProduct('${p.id}')" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm border dark:border-gray-700 flex flex-col relative click-press group stagger-item rounded-xl md:rounded-2xl" style="animation-delay: ${i*0.05}s">
+                    <div class="relative w-full aspect-square bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="${p.img}" loading="lazy" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-black text-white flex items-center gap-1 shadow-sm"><span class="text-amber-400">★</span> ${p.rating}</div>
+                    </div>
+                    <div class="p-2.5 flex flex-col justify-between flex-grow">
+                        <div>
+                            <p class="text-[11px] font-bold leading-tight mb-1 h-8 overflow-hidden dark:text-gray-200">${p.name}</p>
+                            <div class="flex flex-col gap-0.5 mt-1">
+                                ${brandHtml}
+                                ${modelHtml}
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end mt-2">
+                            <p class="text-green-600 dark:text-green-400 font-black text-xs md:text-sm">TZS ${p.price.toLocaleString()}</p>
+                            ${unitBadge}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        // 🟢 NEW: V3 MODERN HOME LAYOUT
+        // 🟢 UPGRADED: V3 MODERN HOME LAYOUT (With 6 Specific Departments + SVGs)
+        window.renderHomeBase = function() {
+            const container = document.getElementById('dynamic-home-content');
+            
+            // The exact 6 departments, paired with professional SVG icons
+            const myDepts = [
+                { id: 'Foundation', name: 'Foundation', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h3.375c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5m-7.25-4.5l3-1m-1.5.5l-1.5-.5m-7.25 4.5l3-1m-1.5.5l-1.5-.5" /></svg>' },
+                { id: 'Roofing', name: 'Roofing', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75C6.75 5.645 7.645 4.75 8.75 4.75h6.5c1.105 0 2 .895 2 2v13.5" /></svg>' },
+                { id: 'Plumbing', name: 'Plumbing', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2.25c-5.385 5.385-8.25 9.42-8.25 13.5a8.25 8.25 0 1016.5 0c0-4.08-2.865-8.115-8.25-13.5z" /></svg>' },
+                { id: 'Electrical', name: 'Electrical', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>' },
+                { id: 'Finishing', name: 'Finishing', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-3.03 3.03m3.03-3.03l3.667 3.667a1.5 1.5 0 01-2.122 2.122l-1.545-1.545zM9.53 16.122a3 3 0 013.03-3.03m-3.03 3.03L6.14 12.7a3 3 0 011.05-5.118L12.7 6.14a3 3 0 015.118 1.05l1.44 3.36a3 3 0 01-1.05 5.118l-3.36 1.44a3 3 0 01-5.118-1.05z" /></svg>' },
+                { id: 'Tools', name: 'Tools', icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.83-5.83m-4.75 4.75l1.25-1.25m-1.25 1.25l-1.25 1.25m4.75-4.75l-1.25 1.25m1.25-1.25l1.25-1.25m-1.25 1.25l1.25 1.25" /></svg>' }
+            ];
+
+            let html = `
+                <section class="mb-4">
+                    <h2 class="text-lg font-bold mb-3 px-1">Quick Links</h2>
+                    <div class="flex gap-3 overflow-x-auto pb-4 hide-scrollbar -mx-5 px-5">
+                        ${Object.keys(categoryImages).map((cat, i) => `
+                            <div onclick="window.openCategory('${cat}')" class="flex flex-col items-center gap-2 shrink-0 click-press stagger-item" style="animation-delay: ${i*0.05}s">
+                                <img src="${categoryImages[cat]}" class="w-16 h-16 rounded-full object-cover border-2 border-transparent hover:border-green-500 transition-colors shadow-sm">
+                                <span class="text-[10px] font-bold text-gray-600 dark:text-gray-300">${cat}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-lg font-black mb-3 px-1">Explore Departments</h2>
+                    <div class="grid grid-cols-3 gap-3">
+                        ${myDepts.map((dept, i) => `
+                            <div onclick="window.openCategory('${dept.id}')" 
+                                 class="group stagger-item rounded-2xl bg-white dark:bg-gray-800 p-4 click-press border border-gray-100 dark:border-gray-700 hover:border-green-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex flex-col items-center justify-center text-center shadow-sm" 
+                                 style="animation-delay: ${i*0.05}s">
+                                <div class="w-8 h-8 text-green-500 dark:text-green-400 mb-2 transition-transform group-hover:scale-110 flex items-center justify-center">
+                                    ${dept.icon}
+                                </div>
+                                <p class="text-[9px] font-black uppercase tracking-widest leading-tight dark:text-gray-300 group-hover:text-green-600 transition-colors h-6 flex items-center justify-center">${dept.name}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>`;
+
+            let allProducts = [];
+            for (let cat in window.productDatabase) {
+                if (window.productDatabase[cat] && window.productDatabase[cat].length > 0) { allProducts = allProducts.concat(window.productDatabase[cat]); }
+            }
+
+            if (allProducts.length === 0) {
+                html += `<div class="text-center py-16 text-gray-400 font-bold border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl mt-8">Loading product catalog...</div>`;
+            } else {
+                html += `<h2 class="text-lg font-black mb-4 px-1">Recommended For You</h2>`;
+                html += `<div class="grid grid-cols-2 gap-2 md:gap-4 pb-10">${allProducts.map((p, i) => window.generateInstaCardHTML(p, i)).join('')}</div>`;
+            }
+            container.innerHTML = html; 
+            if(typeof window.renderTrending === 'function') window.renderTrending(allProducts);
+        };
+
+        window.renderTrending = function(allProducts) {
+            const feed = document.getElementById('trending-feed');
+            if(!allProducts || allProducts.length === 0) {
+                feed.innerHTML = '<p class="text-center py-10 text-gray-400 font-bold border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl mt-4">Loading market data...</p>';
+                return;
+            }
+
+            const now = new Date();
+            const trending = allProducts.filter(p => {
+                if (p.isBoosted && p.featuredUntil) {
+                    const expiry = typeof p.featuredUntil.toDate === 'function' ? p.featuredUntil.toDate() : new Date(p.featuredUntil);
+                    return expiry > now;
+                }
+                return false;
+            });
+            const displayProducts = trending.length > 0 ? trending : allProducts.slice(0, 2);
+
+            let html = '';
+            displayProducts.forEach((p, i) => {
+                const percent = Math.floor(Math.random() * 5) + 1; 
+                html += `
+                <div onclick="window.openProduct('${p.id}')" class="bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden shadow-sm border dark:border-gray-700 stagger-item click-press group" style="animation-delay: ${i*0.1}s">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <span class="bg-red-500 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest mb-2 inline-block shadow-lg">Trending</span>
+                            <h3 class="font-black text-xl leading-tight truncate w-56">${p.name}</h3>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white/90 glass text-gray-900 text-[10px] font-black px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 text-green-600"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
+                            +${percent}%
+                        </div>
+                    </div>
+                    <div class="p-5 flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Current Market Price</p>
+                            <p class="text-green-600 dark:text-green-400 font-black text-xl">TZS ${p.price.toLocaleString()}</p>
+                        </div>
+                        <div class="flex items-end gap-1 h-8">
+                            <div class="w-2 bg-gray-200 dark:bg-gray-700 rounded-t-sm h-[50%] bar-grow"></div>
+                            <div class="w-2 bg-gray-200 dark:bg-gray-700 rounded-t-sm h-[70%] bar-grow"></div>
+                            <div class="w-2 bg-gray-200 dark:bg-gray-700 rounded-t-sm h-[85%] bar-grow"></div>
+                            <div class="w-2 bg-green-500 rounded-t-sm h-[100%] bar-grow"></div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            feed.innerHTML = html;
+        }
+
+        window.openCategory = function(shortCatName, isHistoryNav = false) {
+            const fullCatName = catMap[shortCatName] || shortCatName;
+            const products = window.productDatabase[fullCatName] || [];
+            const container = document.getElementById('dynamic-home-content');
+            let html = `
+                <div class="flex items-center gap-3 mb-4 click-press cursor-pointer" onclick="history.back()">
+                    <span class="w-8 h-8 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm font-bold border border-transparent dark:border-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                    </span>
+                    <h2 class="text-xl font-bold">${shortCatName}</h2>
+                </div>`;
+                
+            if(products.length === 0) {
+                html += `<div class="text-center mt-12 p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-[2rem]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" /></svg>
+                            <p class="text-gray-400 text-sm font-bold">No products live in this category yet.</p>
+                        </div>`;
+            } else {
+                html += `<div class="grid grid-cols-2 gap-2 md:gap-4">${products.map((p, i) => window.generateInstaCardHTML(p, i)).join('')}</div>`;
+            }
+            container.innerHTML = html; window.scrollTo(0, 0);
+            if(!isHistoryNav) history.pushState({ view: 'home', category: shortCatName }, '', '#category-' + shortCatName.replace(/\s+/g,''));
+        }
+
+        // 🟢 NEW: FULL-SCREEN PRODUCT LOGIC
+        window.cart = window.cart || [];
+        window.currentModalProduct = null;
+        window.fbtItem = null;
+
+        window.changeModalImage = function(url) {
+            document.getElementById('fs-modal-img').src = url;
+        };
+
+        window.openProduct = function(productId) {
+            const p = window.allProductsMap[productId];
+            if(!p) return;
+            window.currentModalProduct = p;
+
+            document.getElementById('fs-modal-img').src = p.img;
+
+            const thumbsContainer = document.getElementById('fs-modal-gallery-thumbs');
+            if (p.gallery && p.gallery.length > 1) {
+                thumbsContainer.innerHTML = p.gallery.map((url) => `
+                    <div onclick="changeModalImage('${url}')" class="w-14 h-14 rounded-xl overflow-hidden border-2 border-gray-200 shadow-sm cursor-pointer hover:border-green-500 transition-colors shrink-0">
+                        <img src="${url}" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+                thumbsContainer.classList.remove('hidden');
+            } else {
+                thumbsContainer.classList.add('hidden');
+            }
+
+            document.getElementById('fs-modal-title').textContent = p.name;
+            // 🟢 NEW: Set Brand and Model in the modal
+            // 🟢 UPGRADED: Stack Brand, Model, and Unit in the modal
+            let detailsHtml = '';
+            if (p.brand) detailsHtml += `<span class="block text-blue-500">Brand: ${p.brand}</span>`;
+            if (p.model) detailsHtml += `<span class="block text-gray-500 dark:text-gray-400 mt-0.5 text-[9px]">Model: ${p.model}</span>`;
+            if (p.wt) detailsHtml += `<span class="block text-gray-400 dark:text-gray-500 mt-0.5 text-[9px]">Measurement: ${p.wt} ${p.unit || ''}</span>`;
+            
+            document.getElementById('fs-modal-brand-model').innerHTML = detailsHtml;
+            document.getElementById('fs-modal-desc').textContent = p.desc;
+            document.getElementById('fs-modal-rating-text').textContent = `${p.rating} (${p.reviews} verified)`;
+            document.getElementById('fs-modal-review-text').textContent = `"${p.reviewTxt}"`;
+            // Keep these existing lines running
+        document.getElementById('fs-modal-qty').value = 1;
+        const userReviewsContainer = document.getElementById('fs-user-added-reviews');
+        if (userReviewsContainer) userReviewsContainer.innerHTML = '';
+
+        // 🟢 UPGRADED: Variation Pill Engine
+        window.currentSelectedVariation = null;
+        const varContainer = document.getElementById('fs-variation-container');
+        const varPillsContainer = document.getElementById('fs-variation-pills');
+        
+        if (p.variations && p.variations.length > 0) {
+            varContainer.classList.remove('hidden');
+            
+            // Build the clickable pills
+            varPillsContainer.innerHTML = p.variations.map((v, i) => {
+                const isOutOfStock = v.stock <= 0;
+                const baseClass = "px-4 py-3 rounded-xl border text-xs font-black uppercase tracking-widest transition-all click-press cursor-pointer flex flex-col items-start gap-1";
+                const stockClass = isOutOfStock 
+                    ? "border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 opacity-50 cursor-not-allowed" 
+                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:border-green-500 var-pill-active";
+                
+                return `
+                <button type="button" 
+                        id="pill-var-${i}" 
+                        ${isOutOfStock ? 'disabled' : `onclick="window.selectVariation(${i})"`}
+                        class="${baseClass} ${stockClass} w-[calc(50%-0.25rem)]">
+                    <span>${v.name}</span>
+                    <span class="${isOutOfStock ? 'text-gray-400 line-through' : 'text-green-600 dark:text-green-500'}">TZS ${v.price.toLocaleString()}</span>
+                </button>`;
+            }).join('');
+
+            // Automatically select the first IN-STOCK variation
+            const firstAvailableIndex = p.variations.findIndex(v => v.stock > 0);
+            if (firstAvailableIndex !== -1) {
+                window.selectVariation(firstAvailableIndex);
+            } else {
+                // If EVERYTHING is out of stock
+                document.getElementById('fs-modal-price').textContent = "Out of Stock";
+                document.getElementById('fs-modal-stock-badge').textContent = "Stock: 0 units";
+                document.getElementById('fs-modal-stock-badge').className = "px-3 py-1 bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[10px] font-black rounded border border-red-100 dark:border-red-800 inline-block uppercase tracking-widest";
+            }
+        } else {
+            // Standard Product (No variations)
+            varContainer.classList.add('hidden');
+            varPillsContainer.innerHTML = '';
+            document.getElementById('fs-modal-price').textContent = `TZS ${p.price.toLocaleString()}`;
+            
+            const stockBadge = document.getElementById('fs-modal-stock-badge');
+            stockBadge.textContent = `Stock: ${p.stock} units`;
+            stockBadge.className = p.stock > 0 ? "px-3 py-1 bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black rounded border border-green-100 dark:border-green-800 inline-block uppercase tracking-widest" : "px-3 py-1 bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[10px] font-black rounded border border-red-100 dark:border-red-800 inline-block uppercase tracking-widest";
+        }
+            
+            history.pushState({ modal: 'fs-product' }, '', '#product');
+            
+            // --- 🟢 UPDATED: DYNAMIC FREQUENTLY BOUGHT TOGETHER ---
+            const fbtSection = document.getElementById('fs-fbt-section');
+            window.fbtItem = null;
+            
+            // 1. Flatten all categories into one massive list of products
+            let allProducts = Object.values(window.productDatabase || {}).flat();
+            
+            // 2. Filter out the product we are currently looking at
+            let otherProducts = allProducts.filter(item => item.id !== p.id);
+            
+            // 3. Pick a random product from the remaining list!
+            if (otherProducts.length > 0) {
+                window.fbtItem = otherProducts[Math.floor(Math.random() * otherProducts.length)];
+            }
+
+            if(window.fbtItem) {
+                document.getElementById('fs-fbt-img').src = window.fbtItem.img || 'https://ui-avatars.com/api/?name=Item';
+                document.getElementById('fs-fbt-title').textContent = window.fbtItem.name;
+                document.getElementById('fs-fbt-price').textContent = `+ TZS ${window.fbtItem.price.toLocaleString()}`;
+                const fbtCheck = document.getElementById('fs-fbt-checkbox');
+                if(fbtCheck) fbtCheck.checked = false;
+                fbtSection.classList.remove('hidden');
+            } else {
+                fbtSection.classList.add('hidden');
+            }
+
+            const modal = document.getElementById('fs-product-view');
+            if(modal) {
+                modal.classList.remove('hidden');
+                void modal.offsetWidth; 
+                modal.classList.remove('translate-x-full');
+            }
+        }
+
+        // 🟢 NEW: Handles the Pill Clicks!
+        window.selectVariation = function(index) {
+            if(!window.currentModalProduct || !window.currentModalProduct.variations) return;
+            
+            const selectedVar = window.currentModalProduct.variations[index];
+            if(!selectedVar || selectedVar.stock <= 0) return;
+            
+            window.currentSelectedVariation = selectedVar;
+            
+            // UI Update: Remove active state from all pills
+            document.querySelectorAll('.var-pill-active').forEach(pill => {
+                pill.classList.remove('border-green-500', 'ring-2', 'ring-green-500/20');
+                pill.classList.add('border-gray-200', 'dark:border-gray-700');
+            });
+            
+            // UI Update: Add active state to clicked pill
+            const activePill = document.getElementById(`pill-var-${index}`);
+            if(activePill) {
+                activePill.classList.remove('border-gray-200', 'dark:border-gray-700');
+                activePill.classList.add('border-green-500', 'ring-2', 'ring-green-500/20');
+            }
+            
+            // Update the main big Price & Stock Badge
+            document.getElementById('fs-modal-price').textContent = `TZS ${selectedVar.price.toLocaleString()}`;
+            
+            const stockBadge = document.getElementById('fs-modal-stock-badge');
+            stockBadge.textContent = `Stock: ${selectedVar.stock} units`;
+            stockBadge.className = "px-3 py-1 bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black rounded border border-green-100 dark:border-green-800 inline-block uppercase tracking-widest";
+        };
+
+        window.closeProductFullScreen = function() {
+            const modal = document.getElementById('fs-product-view');
+            if(modal) {
+                modal.classList.add('translate-x-full');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        // 🟢 UPGRADED: Smart Add To Basket (Understands Variations)
+        window.addToBasketAction = function() {
+            const p = window.currentModalProduct;
+            if (!p) return;
+
+            // 1. Determine the final title, price, and stock based on variation choice
+            let finalTitle = p.name;
+            let finalPrice = p.price;
+            let finalStock = p.stock;
+
+            if (p.variations && p.variations.length > 0) {
+                if (!window.currentSelectedVariation) {
+                    return alert("Please select an option before adding to cart.");
+                }
+                // Overrides base product with the selected pill's data
+                finalTitle = `${p.name} (${window.currentSelectedVariation.name})`;
+                finalPrice = window.currentSelectedVariation.price;
+                finalStock = window.currentSelectedVariation.stock;
+            }
+
+            // 2. THE BOUNCER: Block out of stock items
+            if (finalStock <= 0) {
+                return alert("Sorry, this specific option is currently out of stock!");
+            }
+
+            // 3. Get the quantity
+            let qtyVal = parseInt(document.getElementById('fs-modal-qty').value);
+            const qty = isNaN(qtyVal) || qtyVal < 1 ? 1 : qtyVal; 
+
+            if (qty > finalStock) {
+                return alert(`Sorry, we only have ${finalStock} units of this specific item left.`);
+            }
+
+            // 4. SMART GROUPING: Check if this exact variation is already in the cart
+            window.cart = window.cart || [];
+            const existingItem = window.cart.find(item => item.id === p.id && item.title === finalTitle);
+
+            if (existingItem) {
+                if (existingItem.qty + qty > finalStock) {
+                    return alert(`You can't add more. Only ${finalStock} units available.`);
+                }
+                existingItem.qty += qty;
+            } else {
+                window.cart.push({ 
+                    id: p.id,
+                    title: finalTitle, 
+                    price: finalPrice, 
+                    wt: p.weight || p.wt || 0, 
+                    qty: qty,
+                    img: p.img
+                });
+            }
+            
+            // 5. Check for 'Frequently Bought Together' item
+            const fbtCheck = document.getElementById('fs-fbt-checkbox');
+            if(window.fbtItem && fbtCheck && fbtCheck.checked) {
+                window.cart.push({ title: window.fbtItem.name, price: window.fbtItem.price, wt: window.fbtItem.wt || 0, qty: 1 });
+            }
+
+            // 6. Save, update UI, and close modal
+            if(typeof window.updateBadge === 'function') window.updateBadge();
+            if(typeof window.saveCart === 'function') window.saveCart();
+            if(typeof window.renderCart === 'function') window.renderCart();
+            
+            window.closeProductFullScreen();
+            if (window.location.hash === '#product') {
+                history.back();
+            }
+            
+            // 7. Show a slick success toast
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-[10px] uppercase tracking-widest font-black shadow-2xl z-[600] animate-stagger-in flex items-center gap-2 border border-gray-700";
+            toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Added to Cart`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 2500);
+        };
+
+        window.changeQty = function(amt) {
+            const input = document.getElementById('fs-modal-qty');
+            if(!input) return;
+            let current = parseInt(input.value);
+            if (isNaN(current)) current = 0; 
+            let v = current + amt;
+            if(v > 0) input.value = v;
+            else input.value = 1;
+        }
+
+        window.validateQty = function() {
+            const input = document.getElementById('fs-modal-qty');
+            if(!input) return;
+            let v = parseInt(input.value);
+            if(isNaN(v) || v < 1) input.value = 1;
+        }
+
+        window.updateBadge = function() { 
+            const b = document.getElementById('cart-badge'); 
+            if(!b) return;
+            b.textContent = window.cart.length; 
+            b.classList.toggle('hidden', window.cart.length === 0); 
+        }
+
+        window.currentRating = 5;
+        window.setRating = function(stars) {
+            window.currentRating = stars;
+            const container = document.getElementById('fs-star-rating-selector');
+            if(!container) return;
+            const starSpans = container.children;
+            for(let i=0; i<5; i++) {
+                starSpans[i].className = i < stars ? "cursor-pointer text-amber-400" : "cursor-pointer text-gray-300 hover:text-amber-400 transition-colors";
+            }
+        };
+
+        window.submitReview = function() {
+            const textInput = document.getElementById('fs-review-text');
+            if(!textInput) return;
+            const txt = textInput.value.trim();
+            if(!txt) return alert("Please enter your feedback before submitting.");
+            
+            const user = JSON.parse(localStorage.getItem('ujenzi_user'));
+            const name = user ? user.name : "Guest Builder";
+            
+            let starsHtml = "";
+            for(let i=0; i<5; i++) { starsHtml += i < window.currentRating ? "★" : "☆"; }
+            
+            const newReview = `
+            <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border border-green-200 dark:border-green-800 mb-2 animate-stagger-in shadow-sm">
+                <p class="text-[10px] font-bold text-gray-500 mb-1 flex items-center gap-1">
+                    <span class="text-amber-400 text-xs">${starsHtml}</span> ${name} <span class="text-[8px] text-green-500 ml-1">(Just now)</span>
+                </p>
+                <p class="text-xs font-medium text-gray-700 dark:text-gray-300 italic">"${txt}"</p>
+            </div>`;
+            
+            const container = document.getElementById('fs-user-added-reviews');
+            if(container) container.insertAdjacentHTML('beforeend', newReview);
+            
+            textInput.value = '';
+            window.setRating(5);
+        };
+
+        window.calculateDelivery = function() {
+            const zoneEl = document.getElementById('delivery-zone');
+            if(!zoneEl) return;
+            const zone = parseFloat(zoneEl.value);
+            let tw = 0; window.cart.forEach(i => tw += (i.wt * i.qty));
+            let br = 0; let n = "Store Pickup"; 
+            if(zone > 0) {
+                if(tw <= 50) { br = 10000; n = "Bodaboda"; }
+                else if(tw <= 400) { br = 25000; n = "Bajaji"; }
+                else if(tw <= 2500) { br = 60000; n = "Canter Truck"; }
+                else { br = 150000; n = "Fuso Truck"; }
+            }
+            const isGold = parseInt(localStorage.getItem('ujenzi_total_spend')||'0') >= 5000000;
+            window.transportCost = br * zone;
+            if(isGold && window.transportCost > 0) { window.transportCost *= 0.5; n += " (VIP 50%)"; }
+            
+            const vName = document.getElementById('vehicle-name'); if(vName) vName.textContent = n;
+            const tCost = document.getElementById('transport-cost-display'); if(tCost) tCost.textContent = zone === 0 ? 'Free' : `TZS ${window.transportCost.toLocaleString()}`;
+            
+            let sub = 0; window.cart.forEach(i => sub += (i.price * i.qty));
+            const subEl = document.getElementById('cart-subtotal'); if(subEl) subEl.textContent = `TZS ${sub.toLocaleString()}`;
+            const transEl = document.getElementById('cart-transport'); if(transEl) transEl.textContent = `TZS ${window.transportCost.toLocaleString()}`;
+            const totEl = document.getElementById('cart-total-price'); if(totEl) totEl.textContent = `TZS ${(sub + window.transportCost).toLocaleString()}`;
+        }
+
+        window.renderCart = function() {
+            const c = document.getElementById('cart-items-container');
+            const f = document.getElementById('cart-footer');
+            if(!c) return;
+            if(window.cart.length === 0) { 
+                c.innerHTML = '<p class="text-center text-gray-400 py-16 font-bold">Your basket is empty.</p>'; 
+                if(f) f.classList.add('hidden'); 
+                return; 
+            }
+            c.innerHTML = window.cart.map((i, idx) => `
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-100 dark:border-gray-700 stagger-item" style="animation-delay: ${idx*0.05}s">
+                    <div>
+                        <p class="font-bold text-xs uppercase">${i.title}</p>
+                        <p class="text-xs text-gray-500 mt-1">${i.qty} units × TZS ${i.price.toLocaleString()}</p>
+                    </div>
+                    <button onclick="window.cart.splice(${idx},1);window.renderCart();window.updateBadge();" class="w-8 h-8 flex items-center justify-center bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full font-bold click-press">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>`).join('');
+            if(f) f.classList.remove('hidden');
+            window.calculateDelivery();
+        }
+
+        window.processCheckout = async function() {
+            const pInput = document.getElementById("phone-number");
+            const dInput = document.getElementById('delivery-phone');
+            if(!pInput || !dInput) return;
+            
+            const phoneInput = pInput.value.trim(); 
+            const delPhone = dInput.value.trim();
+            if (!phoneInput) return alert("Please enter your mobile money number for payment.");
+            if (!delPhone) return alert("Please enter a delivery contact number so the driver can reach you.");
+            if (window.cart.length === 0) return alert("Your basket is empty!");
+            
+            let subtotal = 0; let itemsString = "";
+            window.cart.forEach(item => { subtotal += (item.price * item.qty); itemsString += `${item.title} (x${item.qty}), `; });
+            
+            const currentTransport = typeof window.transportCost !== 'undefined' ? window.transportCost : 0;
+            const totalAmount = subtotal + currentTransport; 
+            const orderId = "ORD-" + Math.floor(Math.random() * 1000000); 
+
+            const receipt = {
+                orderId: orderId,
+                dateString: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                items: itemsString.slice(0, -2), subtotal: subtotal, transport: currentTransport, total: totalAmount,
+                type: 'Mobile Money', deliveryContact: delPhone, status: 'PENDING' 
+            };
+
+            // 🛑 FIX: Save a snapshot of the cart, but pass an EMPTY array to submitCloudOrder so it WAITS to deduct stock!
+            const cartSnapshot = [...window.cart];
+            if(typeof window.submitCloudOrder === 'function') window.submitCloudOrder(receipt, orderId, []);
+
+            const btn = document.getElementById("pay-btn");
+            if(btn) { btn.innerHTML = "⏳ Connecting..."; btn.disabled = true; }
+
+            try {
+                const functionUrl = "https://europe-west1-ujenzismart-878af.cloudfunctions.net/createSnippePayment";
+                const response = await fetch(functionUrl, { method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ data: { amount: totalAmount, phoneNumber: phoneInput, orderId: orderId, paymentType: 'mobile' } })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    if(btn) { btn.innerText = "📱 Check phone!"; btn.classList.replace("bg-green-600", "bg-blue-600"); }
+                    // 🟢 Pass the cartSnapshot to the Webhook Listener!
+                    if (typeof window.listenForSnippeWebhook === 'function') window.listenForSnippeWebhook(orderId, btn, 'mobile', cartSnapshot);
+                } else {
+                    // This will tell us the ACTUAL error from the server instead of [object Object]
+                    console.error("Full Server Error:", data);
+                    alert("Checkout Error: " + (typeof data.error === 'object' ? JSON.stringify(data.error) : data.error));
+                    if(btn) { btn.innerHTML = `Send Prompt`; btn.disabled = false; }
+                }
+            } catch (error) {
+                alert("Network error connecting to payment gateway.");
+                if(btn) { btn.innerHTML = `Send Prompt`; btn.disabled = false; }
+            }
+        }
+        
+        window.checkoutWhatsApp = function() {
+            const u = JSON.parse(localStorage.getItem('ujenzi_user'));
+            const delPhone = document.getElementById('delivery-phone').value.trim();
+            if(!delPhone) return alert("Please enter a delivery contact number.");
+
+            let sub = 0; let m = `Habari UjenziSmart! I am ${u ? u.name : 'Guest'}.\nI want to order:\n\n`;
+            let itemsString = "";
+            window.cart.forEach(i => { itemsString += `${i.title} (x${i.qty}), `; m += `- ${i.title} (x${i.qty})\n`; sub += i.price * i.qty; });
+            
+            const sel = document.getElementById('delivery-zone');
+            const zoneName = sel ? sel.options[sel.selectedIndex].text : "Pickup";
+            const currentTransport = typeof window.transportCost !== 'undefined' ? window.transportCost : 0;
+            const totalCost = sub + currentTransport;
+
+            m += `\nSubtotal: TZS ${sub.toLocaleString()}\nZone: ${zoneName}\nTransport: TZS ${currentTransport.toLocaleString()}\nDelivery: ${delPhone}\n*TOTAL: TZS ${totalCost.toLocaleString()}*`;
+            const orderId = 'US-' + Math.floor(1000 + Math.random() * 9000);
+            
+            const receipt = {
+                orderId: orderId, dateString: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                items: itemsString.slice(0, -2), subtotal: sub, transport: currentTransport, total: totalCost, type: 'WhatsApp Order', deliveryContact: delPhone, status: 'PENDING'
+            };
+
+            // 🛑 FIX: Pass the exact cart items to deduct stock
+            if(typeof window.submitCloudOrder === 'function') window.submitCloudOrder(receipt, orderId, [...window.cart]);
+
+            m += `\n\n*Order ID: ${orderId}*`;
+            window.cart = []; window.updateBadge();
+            const WA_NUM = '255743924467';
+            window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(m)}`, '_blank');
+            window.navigateTo('history', false, true); 
+        }
+
+        window.renderHistory = function() {
+            const history = window.appHistory || [];
+            const spend = window.appSpend || 0;
+            const filterEl = document.getElementById('history-filter');
+            const filterValue = filterEl ? filterEl.value : 'ALL';
+            
+            const hTotal = document.getElementById('history-total');
+            if(hTotal) hTotal.textContent = `TZS ${spend.toLocaleString()}`;
+            
+            let totalMat = 0; let totalTrans = 0;
+            history.forEach(r => { 
+                if(r.status === 'PAID' || r.status === 'SUCCESS' || r.status === 'SOLVED' || r.status === 'PROCESSING') { totalMat += r.subtotal; totalTrans += r.transport; }
+            });
+            const matVal = document.getElementById('history-materials-val'); if(matVal) matVal.textContent = `TZS ${totalMat.toLocaleString()}`;
+            const transVal = document.getElementById('history-transport-val'); if(transVal) transVal.textContent = `TZS ${totalTrans.toLocaleString()}`;
+
+            let matPct = spend > 0 ? Math.min((totalMat / spend) * 100, 100) : 0;
+            let transPct = spend > 0 ? Math.min((totalTrans / spend) * 100, 100) : 0;
+
+            setTimeout(() => {
+                const bm = document.getElementById('bar-materials'); if(bm) bm.style.width = `${matPct}%`;
+                const bt = document.getElementById('bar-transport'); if(bt) bt.style.width = `${transPct}%`;
+            }, 100);
+
+            const activeArea = document.getElementById('active-tracking-area');
+            const trackFeed = document.getElementById('tracking-feed');
+            const receiptFeed = document.getElementById('receipt-feed');
+
+            if(!activeArea || !trackFeed || !receiptFeed) return;
+
+            if(history.length === 0) {
+                activeArea.classList.add('hidden');
+                receiptFeed.innerHTML = `<div class="text-center py-6 text-gray-400 text-xs font-bold">No transactions found.</div>`;
+                return;
+            }
+
+            let activeHtml = ''; let pastHtml = '';
+
+            history.forEach((r, i) => {
+                const status = (r.status || 'PENDING').toUpperCase();
+                const isCompleted = status === 'SOLVED' || status === 'DELIVERED' || status === 'CANCELLED' || status === 'FAILED';
+                const isPaidStatus = status === 'PAID' || status === 'SUCCESS' || status === 'SOLVED' || status === 'PROCESSING' || status === 'DELIVERED';
+
+                if (filterValue === 'PAID' && !isPaidStatus) return;
+                if (filterValue === 'PENDING' && status !== 'PENDING') return;
+
+                if (!isCompleted && status !== 'PENDING') {
+                    activeHtml += `<div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-green-500 mb-2"><p class="font-bold">Order ${r.orderId}</p><p class="text-xs text-gray-500">${r.items}</p><p class="text-[9px] text-green-500 mt-2 font-bold">${status}</p></div>`;
+                } else {
+                    pastHtml += `<div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 mb-2"><p class="font-bold text-xs">${r.dateString}</p><p class="text-xs text-gray-500 my-1">${r.items}</p><p class="text-[10px] font-bold ${isCompleted ? 'text-gray-400' : 'text-amber-500'}">${status} - TZS ${r.total.toLocaleString()}</p></div>`;
+                }
+            });
+
+            if (filterValue === 'ALL' || filterValue === 'PENDING' || filterValue === 'PAID') {
+                if (activeHtml !== '') { trackFeed.innerHTML = activeHtml; activeArea.classList.remove('hidden'); } 
+                else { activeArea.classList.add('hidden'); }
+            } else { activeArea.classList.add('hidden'); }
+
+            if (pastHtml !== '') { receiptFeed.innerHTML = pastHtml; } 
+            else { receiptFeed.innerHTML = `<div class="text-center py-6 text-gray-400 text-xs font-bold">No receipts match this filter.</div>`; }
+        }
+
+        window.clearHistory = async function() {
+            if(!confirm("Are you sure you want to clear your transaction history?")) return;
+            const historyToHide = window.appHistory || [];
+            if(historyToHide.length === 0) return alert("Your history is already empty.");
+            try {
+                for (const order of historyToHide) { if(typeof window.hideOrderInFirebase === 'function') window.hideOrderInFirebase(order.id); }
+                alert("✅ Transaction history cleared.");
+            } catch (error) { alert("Failed to clear history."); }
+        }
+
+        window.shareStatement = function() {
+            const u = JSON.parse(localStorage.getItem('ujenzi_user')); const spend = window.appSpend || 0;
+            let m = `📊 *UjenziSmart Financial Report*\nBuilder: ${u ? u.name : 'Guest'}\nLifetime Spend: *TZS ${spend.toLocaleString()}*\n\n`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(m)}`, '_blank');
+        }
+
+        window.downloadStatement = function() { alert("Download feature ready. (Connect PDF Lib in Production)"); }
+
+        window.saveToPhase = function() {
+            if(!window.currentModalProduct) return;
+            const phase = document.getElementById('fs-phase-selector').value;
+            let list = JSON.parse(localStorage.getItem('ujenzi_wishlist') || '[]');
+            list.push({ ...window.currentModalProduct, phase: phase });
+            localStorage.setItem('ujenzi_wishlist', JSON.stringify(list));
+            alert(`Saved to Phase: ${phase}`);
+            window.closeProductFullScreen(); history.back();
+            if(!document.getElementById('view-profile').classList.contains('hidden')) window.updateWishlistCounts();
+        }
+
+        window.removeFromPhase = function(phase, originalIndex) {
+            let list = JSON.parse(localStorage.getItem('ujenzi_wishlist') || '[]');
+            list.splice(originalIndex, 1); localStorage.setItem('ujenzi_wishlist', JSON.stringify(list));
+            window.updateWishlistCounts(); window.renderWishlistPhase(phase); 
+        }
+
+        window.clearPhase = function(phase) {
+            if(confirm(`Are you sure you want to remove all items from ${phase}?`)) {
+                let list = JSON.parse(localStorage.getItem('ujenzi_wishlist') || '[]');
+                list = list.filter(x => x.phase !== phase); localStorage.setItem('ujenzi_wishlist', JSON.stringify(list));
+                window.updateWishlistCounts(); window.renderWishlistPhase(phase); 
+            }
+        }
+
+        window.updateWishlistCounts = function() {
+            const list = JSON.parse(localStorage.getItem('ujenzi_wishlist') || '[]');
+            const cf = document.getElementById('count-foundation'); if(cf) cf.textContent = `${list.filter(x => x.phase === 'Foundation').length} Items`;
+            const cr = document.getElementById('count-roofing'); if(cr) cr.textContent = `${list.filter(x => x.phase === 'Roofing').length} Items`;
+            const cfin = document.getElementById('count-finishing'); if(cfin) cfin.textContent = `${list.filter(x => x.phase === 'Finishing').length} Items`;
+        }
+
+        window.renderWishlistPhase = function(phase) {
+            const list = JSON.parse(localStorage.getItem('ujenzi_wishlist') || '[]');
+            const items = list.map((item, index) => ({...item, originalIndex: index})).filter(x => x.phase === phase);
+            const container = document.getElementById('wishlist-render-area');
+            if(!container) return;
+            if(items.length === 0) { 
+                container.innerHTML = `<div class="mb-4 flex items-center justify-between"><h4 class="font-bold text-sm uppercase text-green-600">${phase} Items</h4><button onclick="document.getElementById('wishlist-render-area').classList.add('hidden')" class="text-xs text-gray-400 font-bold">Close</button></div><p class="text-xs text-gray-400 italic mb-6 text-center bg-gray-50 dark:bg-gray-800 p-4 rounded-[1.5rem] border dark:border-gray-700">No items saved in this phase yet.</p>`; 
+                container.classList.remove('hidden'); return; 
+            }
+            container.innerHTML = `
+                <div class="mb-4 flex items-center justify-between"><h4 class="font-bold text-sm uppercase text-green-600">${phase} Items</h4>
+                <div class="flex gap-4"><button onclick="window.clearPhase('${phase}')" class="text-xs text-red-500 font-bold uppercase tracking-widest bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-md">Clear All</button><button onclick="document.getElementById('wishlist-render-area').classList.add('hidden')" class="text-xs text-gray-400 font-bold click-press">Close</button></div></div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    ${items.map(p => `
+                    <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative animate-slideUpFade group">
+                        <button onclick="window.removeFromPhase('${phase}', ${p.originalIndex})" class="absolute top-1 right-1 w-7 h-7 bg-red-50 dark:bg-red-900/40 text-red-500 rounded-full flex items-center justify-center text-xs font-bold shadow-sm z-10 click-press transition-colors hover:bg-red-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                        <img src="${p.img}" class="w-full h-20 object-cover rounded-xl mb-2">
+                        <p class="text-[9px] font-bold h-6 overflow-hidden">${p.name}</p>
+                        <p class="text-green-600 font-black text-[10px]">TZS ${p.price.toLocaleString()}</p>
+                    </div>`).join('')}
+                </div>`;
+            container.classList.remove('hidden');
+        }
+
+        window.switchAiTab = function(tab) {
+            document.getElementById('ai-content-chat').classList.add('hidden'); document.getElementById('ai-content-calc').classList.add('hidden');
+            document.getElementById('tab-chat').classList.remove('text-green-600', 'border-green-600'); document.getElementById('tab-chat').classList.add('text-gray-400', 'border-transparent');
+            document.getElementById('tab-calc').classList.remove('text-green-600', 'border-green-600'); document.getElementById('tab-calc').classList.add('text-gray-400', 'border-transparent');
+            document.getElementById(`ai-content-${tab}`).classList.remove('hidden'); document.getElementById(`tab-${tab}`).classList.remove('text-gray-400', 'border-transparent'); document.getElementById(`tab-${tab}`).classList.add('text-green-600', 'border-green-600');
+        }
+
+        window.runCalculation = function() {
+            const type = document.getElementById('calc-type').value; const lEl = document.getElementById('calc-l'); const wEl = document.getElementById('calc-w');
+            if(!lEl || !wEl) return;
+            const L = parseFloat(lEl.value); const W = parseFloat(wEl.value);
+            if(!L || !W) return; const a = L * W; let r = "";
+            if(type === 'wall') r = `Area: <b>${a}m²</b><br><br>Estimate:<br>• <b>${Math.ceil(a * 12.5)}</b> Blocks<br>• <b>${Math.ceil((a*12.5) / 30)}</b> Bags of Cement`;
+            else if(type === 'floor') r = `Area: <b>${a}m²</b><br><br>Estimate:<br>• <b>${Math.ceil(a * 6.25)}</b> Tiles (40x40)<br>• <b>${Math.ceil(a/4)}</b> Bags Tile Adhesive`;
+            else r = `Area: <b>${a}m²</b><br><br>Estimate:<br>• <b>${Math.ceil(a / 2.2)}</b> Iron Sheets (3m)`;
+            const cr = document.getElementById('calc-results'); if(cr) { cr.innerHTML = r; cr.classList.remove('hidden'); }
+        }
+
+        window.openAiHub = function() { history.pushState({ modal: 'ai-hub' }, '', '#ai-hub'); const hm = document.getElementById('ai-hub-modal'); if(hm) { hm.classList.remove('hidden'); setTimeout(() => { const hs = document.getElementById('ai-hub-sheet'); if(hs) hs.classList.add('open'); }, 10); } };
+        window.closeAiHub = function() { const hs = document.getElementById('ai-hub-sheet'); if(hs) hs.classList.remove('open'); setTimeout(() => { const hm = document.getElementById('ai-hub-modal'); if(hm) hm.classList.add('hidden'); }, 300); }
+
+        window.sendMessage = async function() {
+            const input = document.getElementById('chat-input'); const chatBox = document.getElementById('chat-box'); 
+            if(!input || !chatBox) return;
+            const txt = input.value.trim(); if(!txt) return;
+            chatBox.innerHTML += `<div class="p-3 bg-green-600 text-white rounded-2xl rounded-tr-none ml-auto max-w-[85%] text-sm">${txt}</div>`;
+            input.value = ''; chatBox.scrollTop = chatBox.scrollHeight;
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="p-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl rounded-tl-none mr-auto max-w-[85%] text-sm">Please check the categories tab for material prices!</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        };
+    </script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, setDoc, query, where, onSnapshot, serverTimestamp, orderBy, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-functions.js";
+        
+        const firebaseConfig = { 
+            apiKey: "YOUR_API_KEY", 
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com", 
+            projectId: "YOUR_PROJECT_ID", 
+            storageBucket: "YOUR_PROJECT_ID.firebasestorage.app", 
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID", 
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID" 
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        window.firebaseAuth = auth;
+        const db = getFirestore(app);
+        const functions = getFunctions(app);
+        window.firebaseHttpsCallable = httpsCallable;
+        window.firebaseFunctions = functions;
+
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        onSnapshot(doc(db, "settings", "system"), (docSnap) => {
+            if(docSnap.exists()) {
+                const data = docSnap.data();
+                if(data.liveNews) {
+                    document.getElementById('live-news-text').innerHTML = `<strong>LIVE UPDATE:</strong> ${data.liveNews}`;
+                    document.getElementById('global-alert-bar').style.display = 'flex';
+                } else { document.getElementById('global-alert-bar').style.display = 'none'; }
+
+                if(data.trendNews) {
+                    document.getElementById('trend-news-text').textContent = data.trendNews;
+                    document.getElementById('trend-news-bar').classList.remove('hidden');
+                } else { document.getElementById('trend-news-bar').classList.add('hidden'); }
+            }
+        });
+
+        // 🟢 NEW: PULLING LIVE DATA WITH GLOBAL ID & GALLERY ARRAYS
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            window.productDatabase = {}; 
+            window.allProductsMap = {};
+            let allProductsForHome = [];
+            
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                // 🟢 NEW: Ignore any product the supplier has soft-deleted!
+                if (p.isDeleted) return;
+                const formattedProduct = {
+                    id: doc.id,
+                    name: p.name, price: p.price, wt: p.weight, desc: p.desc, img: p.img, stock: p.stock || 0,
+                    brand: p.brand || '', 
+                    model: p.model || '', 
+                    rating: p.rating || 5.0, reviews: p.reviews || 0, reviewTxt: p.reviewTxt || "Verified Product.",
+                    gallery: p.gallery || [p.img],
+                    isBoosted: p.isBoosted || false,
+                    featuredUntil: p.featuredUntil || null,
+                    variations: p.variations || [],
+                    unit: p.unit || '' // 🟢 NEW: Grab the measurement unit (kg, L, m, etc)
+                };
+                
+                window.allProductsMap[doc.id] = formattedProduct;
+                
+                if(!window.productDatabase[p.category]) window.productDatabase[p.category] = [];
+                window.productDatabase[p.category].push(formattedProduct);
+                allProductsForHome.push(formattedProduct);
+            });
+
+            if(!document.getElementById('view-home').classList.contains('hidden')) {
+                if(document.getElementById('search-input').value) { window.handleSearch(); } 
+                else if (document.getElementById('dynamic-home-content').innerHTML.includes('←')) {
+                    const currentCat = document.querySelector('h2.text-xl.font-bold').textContent;
+                    window.openCategory(currentCat, true);
+                } else { window.renderHomeBase(true); }
+            } else if (!document.getElementById('view-trending').classList.contains('hidden')){
+                window.renderTrending(allProductsForHome);
+            }
+        });
+
+        let unsubscribeOrders = null;
+        function listenToUserOrders(uid) {
+            const q = query(collection(db, "orders"), where("userId", "==", uid));
+            try {
+                unsubscribeOrders = onSnapshot(q, async (snapshot) => {
+                    let history = []; 
+                    let approvedSpend = 0;
+                    
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (!data.hiddenFromCustomer) {
+                            history.push({ id: doc.id, ...data });
+                            if(data.status === 'PAID' || data.status === 'SUCCESS' || data.status === 'SOLVED' || data.status === 'PROCESSING' || data.status === 'DELIVERED') {
+                                approvedSpend += Number(data.total || 0);
+                            }
+                        }
+                    });
+                    
+                    history.sort((a, b) => {
+                        const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
+                        const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
+                        return timeB - timeA;
+                    });
+
+                    window.appHistory = history; 
+                    window.appSpend = approvedSpend;
+                    window.localStorage.setItem('ujenzi_total_spend', approvedSpend.toString());
+
+                    if(!document.getElementById('view-history').classList.contains('hidden')) window.renderHistory();
+                    if(!document.getElementById('view-profile').classList.contains('hidden')) {
+                        window.updateTrackerUI();
+                        document.getElementById('expense-total-display').textContent = `TZS ${approvedSpend.toLocaleString()}`;
+                    }
+                });
+            } catch (err) {}
+        }
+
+        window.submitCloudOrder = async function(receipt, customId = null, itemsToDeduct = []) {
+            const user = auth.currentUser;
+            if(!user) return alert("You must be signed in to place a secure order.");
+            try {
+                const orderData = { ...receipt, userId: user.uid, userName: user.displayName || 'Customer', userEmail: user.email, createdAt: serverTimestamp() };
+                if(customId) { await setDoc(doc(db, "orders", customId), orderData, { merge: true }); } 
+                else { await addDoc(collection(db, "orders"), orderData); }
+
+                // 🟢 ONLY deduct immediately if items are passed (WhatsApp). Mobile Money passes [] to wait for payment.
+                if (itemsToDeduct && itemsToDeduct.length > 0) {
+                    window.executeStockDeduction(itemsToDeduct);
+                }
+            } catch (error) { 
+                console.error("Sync Error:", error); 
+                alert("Failed to sync secure order. Check connection."); 
+            }
+        };
+
+        // 🟢 NEW: Dedicated stock engine that accurately handles Variations!
+        window.executeStockDeduction = async function(cartItems) {
+            for (let i = 0; i < cartItems.length; i++) {
+                const item = cartItems[i];
+                try {
+                    const product = window.allProductsMap[item.id];
+                    if (!product) continue;
+
+                    let updatedVariations = product.variations || [];
+                    let newMainStock = product.stock;
+                    let isVariation = false;
+
+                    if (updatedVariations.length > 0) {
+                        updatedVariations = updatedVariations.map(v => {
+                            // If cart title contains variation name, deduct from this specific option!
+                            if (item.title.includes(`(${v.name})`)) {
+                                isVariation = true;
+                                return { ...v, stock: Math.max(0, v.stock - item.qty) };
+                            }
+                            return v;
+                        });
+                    }
+
+                    if (!isVariation) {
+                        newMainStock = Math.max(0, product.stock - item.qty);
+                    }
+
+                    const updateData = {};
+                    if (!isVariation) updateData.stock = newMainStock;
+                    if (updatedVariations.length > 0) updateData.variations = updatedVariations;
+
+                    await updateDoc(doc(db, "products", item.id), updateData);
+                } catch(e) { console.error("Stock error:", e); }
+            }
+        };
+
+        window.listenForSnippeWebhook = function(orderId, btnElement, payMethod, cartSnapshot) {
+            const unsubscribe = onSnapshot(doc(db, "orders", orderId), (docSnap) => {
+                if (docSnap.exists()) {
+                    const status = docSnap.data().status;
+                    if (status === "SUCCESS" || status === "PAID") {
+                        unsubscribe(); 
+                        btnElement.innerText = "✅ Payment Received!"; btnElement.classList.replace("bg-blue-600", "bg-gray-900");
+                        
+                        // 🟢 DEDUCT STOCK ONLY AFTER PAYMENT IS SUCCESSFUL!
+                        if (cartSnapshot && cartSnapshot.length > 0) {
+                            window.executeStockDeduction(cartSnapshot);
+                        }
+
+                        setTimeout(() => {
+                            window.cart = []; window.updateBadge(); window.navigateTo('history', false, true); 
+                            btnElement.innerHTML = `Send Prompt to Phone`; btnElement.disabled = false; btnElement.classList.replace("bg-gray-900", "bg-green-600");
+                        }, 2000);
+                    } else if (status === "FAILED" || status === "CANCELLED") {
+                        unsubscribe();
+                        btnElement.innerText = "❌ Payment Failed/Cancelled"; btnElement.classList.replace("bg-blue-600", "bg-red-600");
+                        setTimeout(() => {
+                            btnElement.innerHTML = `Send Prompt to Phone`; btnElement.disabled = false; btnElement.classList.replace("bg-red-600", "bg-green-600");
+                        }, 3000);
+                    }
+                }
+            });
+        };
+        getRedirectResult(auth).then((result) => {
+            if (result) {
+                localStorage.setItem('ujenzi_user', JSON.stringify({ name: result.user.displayName, email: result.user.email, photoURL: result.user.photoURL }));
+                location.reload();
+            }
+        });
+
+        const googleBtn = document.getElementById('google-signin-btn');
+        if(googleBtn) {
+            googleBtn.onclick = async () => { 
+                const originalText = googleBtn.innerHTML; googleBtn.innerHTML = "⏳ Securely logging in..."; 
+                try { await signInWithPopup(auth, provider); } catch (error) {
+                    if (error.code === 'auth/popup-blocked') await signInWithRedirect(auth, provider);
+                    else if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') alert("Login failed: " + error.message);
+                    googleBtn.innerHTML = originalText;
+                }
+            };
+        }
+
+        // Tab switching for login/signup
+        const loginTab = document.getElementById('login-tab');
+        const signupTab = document.getElementById('signup-tab');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+
+        if(loginTab && signupTab && loginForm && signupForm) {
+            loginTab.onclick = () => {
+                loginTab.classList.add('bg-white', 'dark:bg-gray-600', 'text-gray-800', 'dark:text-white', 'shadow-sm');
+                loginTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+                signupTab.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-800', 'dark:text-white', 'shadow-sm');
+                signupTab.classList.add('text-gray-500', 'dark:text-gray-400');
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            };
+
+            signupTab.onclick = () => {
+                signupTab.classList.add('bg-white', 'dark:bg-gray-600', 'text-gray-800', 'dark:text-white', 'shadow-sm');
+                signupTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+                loginTab.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-800', 'dark:text-white', 'shadow-sm');
+                loginTab.classList.add('text-gray-500', 'dark:text-gray-400');
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            };
+        }
+
+        // Email sign in
+        const emailSigninBtn = document.getElementById('email-signin-btn');
+        if(emailSigninBtn) {
+            emailSigninBtn.onclick = async () => {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                if(!email || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                const originalText = emailSigninBtn.innerText;
+                emailSigninBtn.innerText = 'Signing in...';
+                
+                try {
+                    import{ signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (error) {
+                    alert('Login failed: ' + error.message);
+                    emailSigninBtn.innerText = originalText;
+                }
+            };
+        }
+
+        // Email sign up
+        const emailSignupBtn = document.getElementById('email-signup-btn');
+        if(emailSignupBtn) {
+            emailSignupBtn.onclick = async () => {
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const phone = document.getElementById('signup-phone').value;
+                const password = document.getElementById('signup-password').value;
+                
+                if(!name || !email || !phone || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                if(password.length < 6) {
+                    alert('Password must be at least 6 characters');
+                    return;
+                }
+                
+                const originalText = emailSignupBtn.innerText;
+                emailSignupBtn.innerText = 'Creating account...';
+                
+                try {
+                    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    await updateProfile(userCredential.user, { displayName: name });
+                    
+                    // Store additional user data
+                    const userData = {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        createdAt: new Date()
+                    };
+                    localStorage.setItem('ujenzi_user_extra', JSON.stringify(userData));
+                    
+                } catch (error) {
+                    alert('Signup failed: ' + error.message);
+                    emailSignupBtn.innerText = originalText;
+                }
+            };
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                localStorage.setItem('ujenzi_user', JSON.stringify({ name: user.displayName, email: user.email, photoURL: user.photoURL }));
+                document.getElementById('auth-screen').classList.add('hidden');
+                listenToUserOrders(user.uid);
+                if(window.initCustomerChat) window.initCustomerChat();
+                if(typeof window.checkAuth === "function") window.checkAuth();
+            } else {
+                if(unsubscribeOrders) unsubscribeOrders(); 
+                localStorage.removeItem('ujenzi_user'); window.appHistory = []; window.appSpend = 0;
+                document.getElementById('auth-screen').classList.remove('hidden');
+            }
+        });
+
+        window.logoutUser = async function() { try { await signOut(auth); localStorage.removeItem('ujenzi_user'); location.reload(); } catch (error) {} };
+
+        window.updateFirebaseName = async function(newName) {
+            if(auth.currentUser) { try { await updateProfile(auth.currentUser, { displayName: newName }); } catch (error) {} }
+        };
+
+        let customerChatListener = null;
+
+        window.initCustomerChat = async function() {
+            const user = auth.currentUser;
+            if(!user) return; 
+            const chatId = `chat_${user.uid}`;
+            const chatArea = document.getElementById('customer-chat-area');
+            await setDoc(doc(db, "chats", chatId), {
+                participants: [user.uid, 'admin'], customerName: user.displayName || 'Builder', updatedAt: serverTimestamp()
+            }, { merge: true });
+
+            if(customerChatListener) customerChatListener();
+            customerChatListener = onSnapshot(query(collection(db, `chats/${chatId}/messages`), orderBy("timestamp", "asc")), (snapshot) => {
+                chatArea.innerHTML = `<div class="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest my-2">Secure Chat</div>
+                    <div class="max-w-[85%] p-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm rounded-2xl rounded-tl-none shadow-sm border dark:border-gray-700 self-start font-medium leading-relaxed">
+                        Hello! I am your dedicated UjenziSmart project manager. How can I help you with your materials today?
+                    </div>`;
+                snapshot.forEach(msgDoc => {
+                    const msg = msgDoc.data();
+                    const isMe = msg.senderId === user.uid;
+                    chatArea.innerHTML += `<div class="max-w-[85%] p-3 rounded-2xl text-sm font-medium ${isMe ? 'bg-green-600 text-white self-end rounded-tr-none shadow-md' : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 self-start rounded-tl-none shadow-sm border dark:border-gray-700'}">${msg.text}</div>`;
+                });
+                chatArea.scrollTop = chatArea.scrollHeight;
+            });
+        };
+
+        window.sendCustomerMessage = async () => {
+            const user = auth.currentUser;
+            if(!user) return alert("Please log in to chat.");
+            const input = document.getElementById('customer-chat-input');
+            const text = input.value.trim();
+            if(!text) return;
+            input.value = '';
+            const chatId = `chat_${user.uid}`;
+            await addDoc(collection(db, `chats/${chatId}/messages`), { senderId: user.uid, text: text, timestamp: serverTimestamp() });
+            await updateDoc(doc(db, "chats", chatId), { lastMessage: text, updatedAt: serverTimestamp() });
+        };
+
+        let messaging = null;
+        try { messaging = getMessaging(app); onMessage(messaging, (payload) => { alert(`📢 UjenziSmart News: ${payload.notification.title}\n${payload.notification.body}`); }); } catch (e) {}
+
+        window.toggleNotifications = async function() {
+            const toggle = document.getElementById('notif-toggle');
+            if (toggle.checked) {
+                if(!messaging) { alert("Push notifications are blocked or not supported by your current browser."); toggle.checked = false; return; }
+                try {
+                    const p = await Notification.requestPermission();
+                    if (p === 'granted') {
+                        const reg = await navigator.serviceWorker.register('/UjenziSmart/firebase-messaging-sw.js', { scope: '/UjenziSmart/' });
+                        const readyReg = await navigator.serviceWorker.ready;
+                        const tok = await getToken(messaging, { vapidKey: "BJjI5bm8ik4BOMzJ-OGkMELrR1ub_Z0HXQKsJ7pBa2oXtGlwzbBSPrGsnRoJEcLna9KfJ6vgNhvDejOfA02khro", serviceWorkerRegistration: readyReg });
+                        if (tok) { localStorage.setItem('ujenzi_notif', 'true'); localStorage.setItem('fcm_token', tok); alert("Notifications Enabled Successfully!"); }
+                    } else { toggle.checked = false; }
+                } catch (e) { toggle.checked = false; }
+            } else { localStorage.setItem('ujenzi_notif', 'false'); }
+        };
+    </script>
+</body>
+</html>

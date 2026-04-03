@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UjenziSmart - Login</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        function applyTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme();
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .slide-up { animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .slide-down { animation: slideDown 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .pulse-dot { animation: pulse 2s ease-in-out infinite; }
+        
+        .click-press { transition: transform 0.1s ease; }
+        .click-press:active { transform: scale(0.96); }
+        
+        .loading-skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        .input-focus { transition: all 0.3s ease; }
+        .input-focus:focus { transform: scale(1.02); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-[#f0f9ff] to-[#ecfdf5] dark:from-[#020617] dark:to-[#0f172a] text-gray-900 dark:text-white relative overflow-hidden">
+
+    <!-- Background Elements -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-green-200/20 dark:bg-green-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-200/20 dark:bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- Theme Toggle -->
+    <button onclick="switchTheme()" class="absolute top-8 right-8 z-50 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-lg border border-gray-200 dark:border-slate-700 transition-colors click-press hover:bg-gray-50 dark:hover:bg-slate-700">
+        <svg id="icon-sun" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-amber-500"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-2.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+        <svg id="icon-moon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-blue-500 dark:text-blue-400"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+    </button>
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center p-6">
+        <div class="w-full max-w-md">
+            
+            <!-- Logo & Branding -->
+            <div id="logo-section" class="text-center mb-8 slide-up transition-all duration-300">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800 mb-6 relative">
+                    <img src="logo.png" alt="UjenziSmart" class="w-16 h-16 rounded-2xl object-cover">
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-slate-900 pulse-dot"></div>
+                </div>
+                <h1 class="text-4xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">UjenziSmart</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm font-semibold">Premium building materials marketplace</p>
+            </div>
+
+            <!-- ===== STAGE 1: EMAIL DETECTION ===== -->
+            <div id="email-detection-stage" class="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-slate-800 slide-up">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-1">Welcome back</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Enter your email to get started</p>
+                </div>
+
+                <!-- Email Input -->
+                <div class="mb-6">
+                    <label class="block text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-3">Email Address</label>
+                    <div class="relative">
+                        <input 
+                            type="email" 
+                            id="email-input" 
+                            placeholder="you@example.com" 
+                            class="w-full px-5 py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-semibold text-gray-900 dark:text-white outline-none input-focus placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+                            onkeydown="if(event.key==='Enter') detectEmail()"
+                        >
+                        <div id="email-icon" class="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0021.75 4.5H2.25A2.25 2.25 0 000 6.75m19.5 0h-15" /></svg>
+                        </div>
+                    </div>
+                    <p id="email-error" class="text-xs text-red-500 font-bold mt-2 hidden">Please enter a valid email address</p>
+                    <p id="email-hint" class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">We'll check if you have an account</p>
+                </div>
+
+                <!-- Continue Button -->
+                <button 
+                    id="continue-email-btn"
+                    onclick="detectEmail()" 
+                    class="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-black uppercase tracking-widest text-sm rounded-xl click-press shadow-lg transition-all flex items-center justify-center gap-3"
+                >
+                    <span id="btn-text">Continue</span>
+                    <svg id="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 transition-transform"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                </button>
+
+                <!-- Social Login Option -->
+                <div class="mt-6 flex items-center gap-3">
+                    <div class="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">or</span>
+                    <div class="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
+                </div>
+
+                <button 
+                    id="google-signin-btn"
+                    class="w-full py-4 mt-6 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 font-black uppercase tracking-widest text-xs rounded-xl click-press shadow-sm transition-all flex items-center justify-center gap-3"
+                >
+                    <svg viewBox="0 0 24 24" width="18" height="18" preserveAspectRatio="xMidYMid meet"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Continue with Google
+                </button>
+
+                <!-- Back to Options or Signup -->
+                <div class="mt-6 text-center text-sm font-medium">
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Don't have an account? <a href="javascript:void(0)" onclick="switchToSignup()" class="text-green-600 dark:text-green-400 font-black hover:underline">Sign up</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- ===== STAGE 2: AUTHENTICATION METHODS ===== -->
+            <div id="auth-methods-stage" class="hidden bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden">
+                <!-- Back Button Header -->
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 px-8 py-6 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <button onclick="backToEmailDetection()" class="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors click-press border border-gray-200 dark:border-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                    </button>
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Email verified</p>
+                        <p id="verified-email-display" class="font-black text-gray-900 dark:text-white">user@example.com</p>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-8">
+                    <!-- SCENARIO 1: Existing User (with Email & Password) -->
+                    <div id="scenario-existing-user" class="hidden slide-up space-y-6">
+                        <div>
+                            <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-1">Welcome back!</h2>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">We found your account. Enter your password to continue</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-3">Password</label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password-input" 
+                                    placeholder="••••••••" 
+                                    class="w-full px-5 py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-semibold outline-none input-focus placeholder-gray-400 dark:placeholder-gray-500 transition-all dark:text-white"
+                                    onkeydown="if(event.key==='Enter') continueWithPassword()"
+                                >
+                                <button onclick="togglePasswordVisibility()" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                    <svg id="pwd-show-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                    <svg id="pwd-hide-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                                </button>
+                            </div>
+                            <p id="password-error" class="text-xs text-red-500 font-bold mt-2 hidden"></p>
+                        </div>
+
+                        <button 
+                            onclick="continueWithPassword()" 
+                            class="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-black uppercase tracking-widest text-sm rounded-xl click-press shadow-lg transition-all"
+                        >
+                            Sign In
+                        </button>
+
+                        <a href="javascript:void(0)" class="block text-center text-sm text-green-600 dark:text-green-400 font-black hover:underline">Forgot password?</a>
+
+                        <div class="flex items-center gap-3 pt-4">
+                            <div class="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">or</span>
+                            <div class="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
+                        </div>
+
+                        <button 
+                            onclick="continueWithGoogle()"
+                            class="w-full py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 font-black uppercase tracking-widest text-xs rounded-xl click-press shadow-sm transition-all flex items-center justify-center gap-3"
+                        >
+                            <svg viewBox="0 0 24 24" width="18" height="18" preserveAspectRatio="xMidYMid meet"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                            Sign In with Google
+                        </button>
+                    </div>
+
+                    <!-- SCENARIO 2: New User (Show Signup) -->
+                    <div id="scenario-new-user" class="hidden slide-up space-y-6">
+                        <div>
+                            <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-1">Create your account</h2>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">We don't have this email yet. Set up your profile</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-3">Full Name</label>
+                            <input 
+                                type="text" 
+                                id="signup-name" 
+                                placeholder="John Doe" 
+                                class="w-full px-5 py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-semibold outline-none input-focus placeholder-gray-400 dark:placeholder-gray-500 transition-all dark:text-white"
+                            >
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-3">Password</label>
+                            <input 
+                                type="password" 
+                                id="signup-password" 
+                                placeholder="••••••••" 
+                                class="w-full px-5 py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-semibold outline-none input-focus placeholder-gray-400 dark:placeholder-gray-500 transition-all dark:text-white"
+                            >
+                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">At least 8 characters recommended</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-3">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                id="signup-phone" 
+                                placeholder="+255 123 456 789" 
+                                class="w-full px-5 py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-semibold outline-none input-focus placeholder-gray-400 dark:placeholder-gray-500 transition-all dark:text-white"
+                            >
+                        </div>
+
+                        <button 
+                            onclick="createAccount()" 
+                            class="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-black uppercase tracking-widest text-sm rounded-xl click-press shadow-lg transition-all"
+                        >
+                            Create Account
+                        </button>
+
+                        <div class="flex items-center gap-3 pt-4">
+                            <div class="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">or</span>
+                            <div class="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
+                        </div>
+
+                        <button 
+                            onclick="continueWithGoogle()"
+                            class="w-full py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 font-black uppercase tracking-widest text-xs rounded-xl click-press shadow-sm transition-all flex items-center justify-center gap-3"
+                        >
+                            <svg viewBox="0 0 24 24" width="18" height="18" preserveAspectRatio="xMidYMid meet"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                            Sign Up with Google
+                        </button>
+                    </div>
+
+                    <!-- SCENARIO 3: Admin User -->
+                    <div id="scenario-admin-user" class="hidden slide-up space-y-6">
+                        <div class="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/10 p-4 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c.866 1.5 2.926 2.75 5.303 2.75s4.437-1.25 5.303-2.75m0 0a3.751 3.751 0 001.068-2.25m0 0a3.75 3.75 0 10-7.498 0m7.498 0c-.875-1.5-2.926-2.75-5.303-2.75s-4.437 1.25-5.303 2.75m0 0a3.75 3.75 0 01-1.068-2.25" /></svg>
+                            <div>
+                                <p class="font-black text-amber-900 dark:text-amber-100 text-sm">Admin Access</p>
+                                <p class="text-xs text-amber-800 dark:text-amber-200 font-medium">You're signing in with admin privileges</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-1">Verify your identity</h2>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Enter your admin password to proceed</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 mb-3">Admin Password</label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="admin-password-input" 
+                                    placeholder="••••••••" 
+                                    class="w-full px-5 py-4 bg-gray-50 dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-semibold outline-none input-focus placeholder-gray-400 dark:placeholder-gray-500 transition-all dark:text-white"
+                                    onkeydown="if(event.key==='Enter') verifyAdminPassword()"
+                                >
+                                <button onclick="toggleAdminPasswordVisibility()" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                    <svg id="admin-pwd-show-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                    <svg id="admin-pwd-hide-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                                </button>
+                            </div>
+                            <p id="admin-password-error" class="text-xs text-red-500 font-bold mt-2 hidden"></p>
+                        </div>
+
+                        <button 
+                            onclick="verifyAdminPassword()" 
+                            class="w-full py-4 bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-700 hover:to-orange-600 text-white font-black uppercase tracking-widest text-sm rounded-xl click-press shadow-lg transition-all"
+                        >
+                            Verify & Access Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400 font-medium">
+                <p>By signing in, you agree to our <a href="#" class="text-green-600 dark:text-green-400 hover:underline">Terms of Service</a> and <a href="#" class="text-green-600 dark:text-green-400 hover:underline">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Theme Toggle
+        function switchTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeIcons();
+        }
+
+        function updateThemeIcons() {
+            const sunIcon = document.getElementById('icon-sun');
+            const moonIcon = document.getElementById('icon-moon');
+            if (document.documentElement.classList.contains('dark')) {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        }
+
+        updateThemeIcons();
+
+        // Email Detection Logic
+        let detectedEmail = '';
+        let emailExists = false;
+        let isAdminUser = false;
+
+        function detectEmail() {
+            const emailInput = document.getElementById('email-input');
+            const email = emailInput.value.trim();
+            const emailError = document.getElementById('email-error');
+            const emailHint = document.getElementById('email-hint');
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.classList.remove('hidden');
+                emailHint.classList.add('hidden');
+                emailInput.classList.add('border-red-500', 'dark:border-red-500');
+                return;
+            }
+
+            emailError.classList.add('hidden');
+            emailHint.classList.remove('hidden');
+            emailInput.classList.remove('border-red-500', 'dark:border-red-500');
+
+            // Simulate API call to check email
+            detectedEmail = email;
+            showLoadingState();
+            
+            // Simulate network delay
+            setTimeout(() => {
+                // Demo: Check if email contains 'admin' or specific patterns
+                isAdminUser = email.includes('admin') || email.includes('master');
+                emailExists = email.length > 5; // Demo logic
+                
+                showAuthMethods();
+            }, 1000);
+        }
+
+        function showLoadingState() {
+            const btn = document.getElementById('continue-email-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.textContent = 'Checking...';
+            btnIcon.classList.add('animate-spin');
+        }
+
+        function showAuthMethods() {
+            const emailStage = document.getElementById('email-detection-stage');
+            const authStage = document.getElementById('auth-methods-stage');
+            const verifiedEmailDisplay = document.getElementById('verified-email-display');
+            
+            emailStage.classList.add('hidden');
+            authStage.classList.remove('hidden');
+            verifiedEmailDisplay.textContent = detectedEmail;
+
+            // Show appropriate scenario
+            if (isAdminUser) {
+                showScenario('admin-user');
+            } else if (emailExists) {
+                showScenario('existing-user');
+            } else {
+                showScenario('new-user');
+            }
+
+            // Reset button state
+            const btn = document.getElementById('continue-email-btn');
+            btn.disabled = false;
+            btn.classList.remove('opacity-75', 'cursor-not-allowed');
+            document.getElementById('btn-text').textContent = 'Continue';
+            document.getElementById('btn-icon').classList.remove('animate-spin');
+        }
+
+        function showScenario(scenario) {
+            document.getElementById('scenario-existing-user').classList.add('hidden');
+            document.getElementById('scenario-new-user').classList.add('hidden');
+            document.getElementById('scenario-admin-user').classList.add('hidden');
+            
+            document.getElementById('scenario-' + scenario).classList.remove('hidden');
+        }
+
+        function backToEmailDetection() {
+            document.getElementById('auth-methods-stage').classList.add('hidden');
+            document.getElementById('email-detection-stage').classList.remove('hidden');
+        }
+
+        function switchToSignup() {
+            // Could implement a direct signup form here
+            alert('Signup workflow can be implemented here');
+        }
+
+        // Password visibility toggle
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password-input');
+            const showIcon = document.getElementById('pwd-show-icon');
+            const hideIcon = document.getElementById('pwd-hide-icon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                showIcon.classList.add('hidden');
+                hideIcon.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                showIcon.classList.remove('hidden');
+                hideIcon.classList.add('hidden');
+            }
+        }
+
+        function toggleAdminPasswordVisibility() {
+            const input = document.getElementById('admin-password-input');
+            const showIcon = document.getElementById('admin-pwd-show-icon');
+            const hideIcon = document.getElementById('admin-pwd-hide-icon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                showIcon.classList.add('hidden');
+                hideIcon.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                showIcon.classList.remove('hidden');
+                hideIcon.classList.add('hidden');
+            }
+        }
+
+        // Authentication handlers
+        function continueWithPassword() {
+            const password = document.getElementById('password-input').value;
+            if (!password) {
+                document.getElementById('password-error').textContent = 'Password is required';
+                document.getElementById('password-error').classList.remove('hidden');
+                return;
+            }
+            console.log('Sign in with:', detectedEmail, password);
+            alert('User signed in successfully!\nEmail: ' + detectedEmail);
+            // Redirect to dashboard
+            // window.location.href = '/dashboard';
+        }
+
+        function verifyAdminPassword() {
+            const password = document.getElementById('admin-password-input').value;
+            if (!password) {
+                document.getElementById('admin-password-error').textContent = 'Admin password is required';
+                document.getElementById('admin-password-error').classList.remove('hidden');
+                return;
+            }
+            console.log('Admin sign in with:', detectedEmail, password);
+            alert('Admin verified successfully!\nEmail: ' + detectedEmail);
+            // Redirect to admin dashboard
+            // window.location.href = '/admin';
+        }
+
+        function createAccount() {
+            const name = document.getElementById('signup-name').value;
+            const password = document.getElementById('signup-password').value;
+            const phone = document.getElementById('signup-phone').value;
+
+            if (!name || !password || !phone) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            console.log('Create account:', {
+                email: detectedEmail,
+                name: name,
+                password: password,
+                phone: phone
+            });
+            alert('Account created successfully!\nEmail: ' + detectedEmail);
+            // Redirect to dashboard
+            // window.location.href = '/dashboard';
+        }
+
+        function continueWithGoogle() {
+            console.log('Continuing with Google for:', detectedEmail);
+            alert('Google authentication initiated for ' + detectedEmail);
+            // Implement Google Sign-In logic
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Integration Example</title>
+</head>
+<body>
+    <h1>Firebase Integration for Email-First Login</h1>
+    <p>Add this code to your login.html to integrate with Firebase Authentication</p>
+    
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION & SETUP
+        // ============================================
+        
+        // Import Firebase (add to your HTML <head>)
+        // &lt;script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"&gt;&lt;/script&gt;
+        // &lt;script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"&gt;&lt;/script&gt;
+        // &lt;script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"&gt;&lt;/script&gt;
+
+        // Initialize Firebase (replace with your config)
+        /*
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        */
+
+        // ============================================
+        // FIRESTORE DATABASE STRUCTURE
+        // ============================================
+        /*
+        Collection: users
+        {
+            uid: "auto-generated",
+            email: "user@example.com",
+            name: "John Doe",
+            phone: "+255123456789",
+            userType: "regular" | "supplier" | "admin",
+            createdAt: timestamp,
+            lastLogin: timestamp,
+            verified: true/false
+        }
+
+        Collection: admins
+        {
+            uid: "user-uid",
+            email: "admin@ujenzismart.com",
+            adminLevel: 1-3 (super-admin, admin, moderator),
+            permissions: ["read", "write", "delete", ...],
+            createdAt: timestamp
+        }
+
+        Collection: suppliers
+        {
+            uid: "user-uid",
+            email: "supplier@example.com",
+            businessName: "Supplier Name",
+            phone: "+255123456789",
+            verified: true/false,
+            category: "cement|tiles|steel|...",
+            createdAt: timestamp
+        }
+        */
+
+        // ============================================
+        // EMAIL DETECTION (with Firestore)
+        // ============================================
+
+        async function detectEmailWithFirebase(email) {
+            // Update your detectEmail() function in login.html to call this
+            try {
+                // Check in users collection
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("email", "==", email));
+                const userSnapshot = await getDocs(q);
+                const userExists = !userSnapshot.empty;
+
+                let isAdminUser = false;
+                let userType = "regular";
+
+                if (userExists) {
+                    const userData = userSnapshot.docs[0].data();
+                    userType = userData.userType || "regular";
+                    isAdminUser = userType === "admin";
+                }
+
+                return {
+                    exists: userExists,
+                    isAdmin: isAdminUser,
+                    userType: userType
+                };
+
+            } catch (error) {
+                console.error("Error checking email:", error);
+                throw error;
+            }
+        }
+
+        // ============================================
+        // SIGN IN WITH EMAIL & PASSWORD
+        // ============================================
+
+        async function signInWithEmailPassword(email, password) {
+            try {
+                // Firebase Authentication
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Get user data from Firestore
+                const userRef = doc(db, "users", user.uid);
+                const userSnapshot = await getDoc(userRef);
+                const userData = userSnapshot.data();
+
+                // Update last login
+                await setDoc(userRef, {
+                    lastLogin: new Date()
+                }, { merge: true });
+
+                // Store in localStorage
+                localStorage.setItem('authToken', user.accessToken);
+                localStorage.setItem('userId', user.uid);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userType', userData.userType);
+
+                // Redirect based on user type
+                if (userData.userType === "admin") {
+                    window.location.href = "/admin.html";
+                } else if (userData.userType === "supplier") {
+                    window.location.href = "/supplier.html";
+                } else {
+                    window.location.href = "/index.html";
+                }
+
+                return { success: true, user: userData };
+
+            } catch (error) {
+                console.error("Sign in error:", error.message);
+                return { 
+                    success: false, 
+                    error: error.message || "Invalid email or password"
+                };
+            }
+        }
+
+        // ============================================
+        // CREATE NEW ACCOUNT (SIGNUP)
+        // ============================================
+
+        async function createAccountWithFirebase(email, password, name, phone, userType = "regular") {
+            try {
+                // Firebase Authentication - Create user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Firestore - Store user data
+                const userRef = doc(db, "users", user.uid);
+                await setDoc(userRef, {
+                    uid: user.uid,
+                    email: email,
+                    name: name,
+                    phone: phone,
+                    userType: userType,
+                    createdAt: new Date(),
+                    lastLogin: new Date(),
+                    verified: false
+                });
+
+                // Store in localStorage
+                localStorage.setItem('authToken', user.accessToken);
+                localStorage.setItem('userId', user.uid);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userType', userType);
+
+                // Send verification email
+                // await sendEmailVerification(user);
+
+                // Redirect to dashboard
+                window.location.href = "/index.html";
+
+                return { success: true, user: user };
+
+            } catch (error) {
+                console.error("Signup error:", error.message);
+                return { 
+                    success: false, 
+                    error: error.message || "Failed to create account"
+                };
+            }
+        }
+
+        // ============================================
+        // GOOGLE SIGN IN / SIGN UP
+        // ============================================
+
+        async function signInWithGoogle() {
+            try {
+                const provider = new GoogleAuthProvider();
+                const userCredential = await signInWithPopup(auth, provider);
+                const user = userCredential.user;
+
+                // Check if user exists in Firestore
+                const userRef = doc(db, "users", user.uid);
+                const userSnapshot = await getDoc(userRef);
+
+                if (!userSnapshot.exists()) {
+                    // New user - create profile
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        email: user.email,
+                        name: user.displayName || "User",
+                        phone: user.phoneNumber || "",
+                        userType: "regular",
+                        createdAt: new Date(),
+                        lastLogin: new Date(),
+                        verified: true, // Google-verified emails are trusted
+                        photoURL: user.photoURL
+                    });
+                } else {
+                    // Existing user - update last login
+                    await setDoc(userRef, {
+                        lastLogin: new Date()
+                    }, { merge: true });
+                }
+
+                const userData = (await getDoc(userRef)).data();
+
+                // Store in localStorage
+                localStorage.setItem('authToken', user.accessToken);
+                localStorage.setItem('userId', user.uid);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userType', userData.userType);
+                localStorage.setItem('userPhoto', userData.photoURL || "");
+
+                // Redirect based on user type
+                if (userData.userType === "admin") {
+                    window.location.href = "/admin.html";
+                } else if (userData.userType === "supplier") {
+                    window.location.href = "/supplier.html";
+                } else {
+                    window.location.href = "/index.html";
+                }
+
+                return { success: true, user: userData };
+
+            } catch (error) {
+                console.error("Google sign-in error:", error.message);
+                return { 
+                    success: false, 
+                    error: error.message || "Google sign-in failed"
+                };
+            }
+        }
+
+        // ============================================
+        // ADMIN PASSWORD VERIFICATION
+        // ============================================
+
+        async function verifyAdminPassword(email, adminPassword) {
+            try {
+                // First authenticate with email/password in Firebase
+                const userCredential = await signInWithEmailAndPassword(auth, email, adminPassword);
+                const user = userCredential.user;
+
+                // Check if user is admin in Firestore
+                const adminRef = doc(db, "admins", user.uid);
+                const adminSnapshot = await getDoc(adminRef);
+
+                if (!adminSnapshot.exists()) {
+                    throw new Error("Admin credentials not found. Contact system administrator.");
+                }
+
+                const adminData = adminSnapshot.data();
+
+                // Update last login for admin
+                await setDoc(adminRef, {
+                    lastLogin: new Date()
+                }, { merge: true });
+
+                // Store admin info in localStorage
+                localStorage.setItem('authToken', user.accessToken);
+                localStorage.setItem('userId', user.uid);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userType', 'admin');
+                localStorage.setItem('adminLevel', adminData.adminLevel || 1);
+                localStorage.setItem('adminPermissions', JSON.stringify(adminData.permissions || []));
+
+                // Redirect to admin dashboard
+                window.location.href = "/admin.html";
+
+                return { success: true, admin: adminData };
+
+            } catch (error) {
+                console.error("Admin verification error:", error.message);
+                return { 
+                    success: false, 
+                    error: error.message || "Admin verification failed"
+                };
+            }
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+
+        async function logout() {
+            try {
+                await signOut(auth);
+                localStorage.clear();
+                window.location.href = "/login.html";
+            } catch (error) {
+                console.error("Logout error:", error.message);
+            }
+        }
+
+        // ============================================
+        // UPDATE LOGIN.HTML FUNCTIONS
+        // ============================================
+
+        // Replace the detectEmail() function in login.html with:
+        /*
+        async function detectEmail() {
+            const emailInput = document.getElementById('email-input');
+            const email = emailInput.value.trim();
+            const emailError = document.getElementById('email-error');
+            const emailHint = document.getElementById('email-hint');
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.classList.remove('hidden');
+                emailHint.classList.add('hidden');
+                emailInput.classList.add('border-red-500', 'dark:border-red-500');
+                return;
+            }
+
+            emailError.classList.add('hidden');
+            emailHint.classList.remove('hidden');
+            emailInput.classList.remove('border-red-500', 'dark:border-red-500');
+
+            detectedEmail = email;
+            showLoadingState();
+            
+            try {
+                const result = await detectEmailWithFirebase(email);
+                isAdminUser = result.isAdmin;
+                emailExists = result.exists;
+                showAuthMethods();
+            } catch (error) {
+                emailError.textContent = 'Error checking email. Please try again.';
+                emailError.classList.remove('hidden');
+                resetButtonState();
+            }
+        }
+        */
+
+        // Replace continueWithPassword() in login.html with:
+        /*
+        async function continueWithPassword() {
+            const password = document.getElementById('password-input').value;
+            if (!password) {
+                document.getElementById('password-error').textContent = 'Password is required';
+                document.getElementById('password-error').classList.remove('hidden');
+                return;
+            }
+
+            const result = await signInWithEmailPassword(detectedEmail, password);
+            if (!result.success) {
+                document.getElementById('password-error').textContent = result.error;
+                document.getElementById('password-error').classList.remove('hidden');
+            }
+        }
+        */
+
+        // Replace createAccount() in login.html with:
+        /*
+        async function createAccount() {
+            const name = document.getElementById('signup-name').value;
+            const password = document.getElementById('signup-password').value;
+            const phone = document.getElementById('signup-phone').value;
+
+            if (!name || !password || !phone) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const result = await createAccountWithFirebase(detectedEmail, password, name, phone, "regular");
+            if (!result.success) {
+                alert('Failed to create account: ' + result.error);
+            }
+        }
+        */
+
+        // Replace continueWithGoogle() in login.html with:
+        /*
+        async function continueWithGoogle() {
+            try {
+                const result = await signInWithGoogle();
+                if (!result.success) {
+                    alert('Google sign-in failed: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+        */
+
+        // Replace verifyAdminPassword() in login.html with:
+        /*
+        async function verifyAdminPassword() {
+            const password = document.getElementById('admin-password-input').value;
+            if (!password) {
+                document.getElementById('admin-password-error').textContent = 'Admin password is required';
+                document.getElementById('admin-password-error').classList.remove('hidden');
+                return;
+            }
+
+            const result = await verifyAdminPassword(detectedEmail, password);
+            if (!result.success) {
+                document.getElementById('admin-password-error').textContent = result.error;
+                document.getElementById('admin-password-error').classList.remove('hidden');
+            }
+        }
+        */
+
+    </script>
+
+    <h2>Integration Checklist</h2>
+    <ul>
+        <li>✓ Add Firebase SDK to login.html &lt;head&gt;</li>
+        <li>✓ Replace placeholder functions with Firebase versions</li>
+        <li>✓ Create Firestore collections (users, admins, suppliers)</li>
+        <li>✓ Setup Google OAuth credentials in Firebase Console</li>
+        <li>✓ Add Firestore security rules</li>
+        <li>✓ Test email detection workflow</li>
+        <li>✓ Test sign-in with email/password</li>
+        <li>✓ Test sign-up flow</li>
+        <li>✓ Test Google Sign-In</li>
+        <li>✓ Test admin verification</li>
+    </ul>
+
+    <h2>Firestore Security Rules</h2>
+    <pre>
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - public read, write own
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Admins collection - admin only
+    match /admins/{adminId} {
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      allow write: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.adminLevel >= 2;
+    }
+
+    // Suppliers collection - supplier write own, public read
+    match /suppliers/{supplierId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth.uid == supplierId;
+    }
+  }
+}
+    </pre>
+
+</body>
+</html>
